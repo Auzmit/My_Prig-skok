@@ -1,0 +1,19 @@
+{
+  "name": "prig-skok",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Auzmit/Prig-skok.git"
+  },
+  "author": "Auzmit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Auzmit/Prig-skok/issues"
+  },
+  "homepage": "https://github.com/Auzmit/Prig-skok#readme"
+}

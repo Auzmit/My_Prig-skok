@@ -1,0 +1,6 @@
+my_*
+test*
+tmp_*
+settings.json
+
+node_modules/
