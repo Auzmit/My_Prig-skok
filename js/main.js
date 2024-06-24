@@ -1,10 +1,14 @@
-import detectCollision from './detectCollision.js';
+// import detectCollision from './detectCollision.js';
+// import { moveSkoker} from './moveSkoker.js';
+// // import { placePlatforms, newPlatform } from './platforms.js';
+// import { placePlatforms, newPlatform } from './platforms.js';
 
 // board
 let board;
 let boardWidth = 600;
 let boardHeight = 800;
 let context;
+// export { boardWidth, boardHeight };
 
 // skoker
 let skokerWidth = 46;
@@ -26,6 +30,7 @@ let velocityX = 0;
 let velocityY = -10;
 let initialVelocityY = -7.5;
 let gravity = 0.4;
+// export { velocityX, velocityY, initialVelocityY, gravity};
 
 // platforms
 let arrPlatform = [];
@@ -35,15 +40,12 @@ let coeffImageToPlatform = 7;
 let platformWidth = platformImageWidth/coeffImageToPlatform;
 let platformHeight = platformImageHeight/coeffImageToPlatform;
 let platformImage;
-let newPlatformCounter = 0;
-
-// clouds
-// let arrClouds = [];
-// for (let i = 1; i <= 6; i++) {
-//   arrClouds.push(`./images/clouds/cloud-right-${i}.png`);
-//   arrClouds.push(`./images/clouds/cloud-left-${i}.png`);
-// }
-// console.log(arrClouds);
+let arrPlatformImages = [];
+for (let i = 1; i <= 6; i++) {
+  arrPlatformImages.push(`./images/clouds/cloud-right-${i}.png`);
+  arrPlatformImages.push(`./images/clouds/cloud-left-${i}.png`);
+}
+// export { platformWidth, platformHeight, arrPlatform, arrPlatformImages };
 
 let score = 0;
 
@@ -68,11 +70,12 @@ window.onload = function() {
     context.drawImage(skoker.image, skoker.x, skoker.y, skoker.width, skoker.height);
   }
   //
-  platformImage = new Image();
+  // platformImage = new Image();
+  // platformImage.src = './images/clouds/cloud-left-1.png';
+
   // platformImage.src = './images/cloud-done-2.35.png';
-  platformImage.src = './images/clouds/cloud-left-1.png';
   // platformImage.src = './images/cloud.png';
-  // platformImage.src = arrClouds[randomIntFromInterval(1, 6)];
+  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
 
   
   // skoker.image = skokerRightImage;
@@ -81,7 +84,7 @@ window.onload = function() {
   // }
 
   // velocityY = initialVelocityY;
-  placePlatforms();
+  placePlatforms(arrPlatformImages);
   requestAnimationFrame(update);
   document.addEventListener('keydown', moveSkoker);
 }
@@ -132,15 +135,9 @@ function update() {
   }
 
   while (arrPlatform.length > 0 && arrPlatform[0].y >= boardHeight+10) {
-    // for (let i = 0; i < arrPlatform.length; i++) {
-    //   console.log(arrPlatform[i]);  
-    // }
-    // console.log('shift');
-
     arrPlatform.shift();
     newPlatform();
-    newPlatformCounter += 1;
-    // console.log(newPlatformCounter);
+    score += 1;
   }
 
   // score
@@ -160,13 +157,18 @@ function moveSkoker(e) {
   }
 }
 
-// function randomIntFromInterval(min, max) { // min and max included 
-//   return Math.floor(Math.random() * (max - min + 1) + min);
-// }
+function randomInteger(min, max) { // min and max included 
+  let randomNumber = Math.random() * (max - min + 1) + min;
+  return Math.floor(randomNumber);
+}
 
 function placePlatforms() {
   // arrPlatform = [];
-  // platformImage.src = arrClouds[randomIntFromInterval(1, 6)];
+  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
+
+  let platformImage = new Image();
+  platformImage.src = arrPlatformImages[
+    randomInteger(0, arrPlatformImages.length - 1)];
 
   // 1-st (starting) platform
   let platform = {
@@ -193,7 +195,7 @@ function placePlatforms() {
 
   for (let i = 0; i < 6; i++) {
     let randomX = Math.floor(Math.random() * boardWidth*3/4);
-    // platformImage.src = arrClouds[randomIntFromInterval(1, 6)];
+    // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
     let platform = {
       image: platformImage,
       x: randomX,
@@ -213,43 +215,47 @@ function placePlatforms() {
 
 function newPlatform() {
   let randomX = Math.floor(Math.random() * boardWidth*3/4);
-  // platformImage.src = arrClouds[randomIntFromInterval(1, 6)];
-    let platform = {
-      image: platformImage,
-      x: randomX,
-      // y: -platformHeight,
-      y: -platformHeight,
-      width: platformWidth,
-      height: platformHeight
-    }
-    if (arrPlatform[arrPlatform.length - 1].y !== platform.y) {
-      arrPlatform.push(platform);
-    }
-    // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
-    // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
-    // console.log('-');
-    // if ((arrPlatform[arrPlatform.length - 1].y - platform.y < 55
-    //   && (arrPlatform[arrPlatform.length - 1].y - platform.y > -55))
-    // ) {
-    //   platform.y -= platformHeight*1;
-    // }
-    // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
-    // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
-    // arrPlatform.push(platform);
-    // for (let i = 0; i < arrPlatform.length; i++) {
-    //   console.log(arrPlatform[i]);  
-    // }
-    // console.log('add 1');
-    // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
-    score += 1;
+  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
+
+  let platformImage = new Image();
+  platformImage.src = arrPlatformImages[
+    randomInteger(0, arrPlatformImages.length - 1)];
+
+  let platform = {
+    image: platformImage,
+    x: randomX,
+    // y: -platformHeight,
+    y: -platformHeight,
+    width: platformWidth,
+    height: platformHeight
+  }
+  if (arrPlatform[arrPlatform.length - 1].y !== platform.y) {
+    arrPlatform.push(platform);
+  }
+  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
+  // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
+  // console.log('-');
+  // if ((arrPlatform[arrPlatform.length - 1].y - platform.y < 55
+  //   && (arrPlatform[arrPlatform.length - 1].y - platform.y > -55))
+  // ) {
+  //   platform.y -= platformHeight*1;
+  // }
+  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
+  // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
+  // arrPlatform.push(platform);
+  // for (let i = 0; i < arrPlatform.length; i++) {
+  //   console.log(arrPlatform[i]);  
+  // }
+  // console.log('add 1');
+  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
 }
 
-// function detectCollision(a, b) {
-//   return a.x < b.x + b.width &&   // on x: a's Top Left corner < b's Top Right corner
-//          a.x + a.width > b.x &&   // on x: a's Top Right corner < b's Top Left corner
-//          a.y < b.y + b.height &&  // on y: a's Top Left corner < b's Bottom Right corner
-//          a.y + a.height > b.y;    // on y: a's Top Right corner < b's Bottom Left corner
-// }
+function detectCollision(a, b) {
+  return a.x < b.x + b.width &&   // on x: a's Top Left corner < b's Top Right corner
+         a.x + a.width > b.x &&   // on x: a's Top Right corner < b's Top Left corner
+         a.y < b.y + b.height &&  // on y: a's Top Left corner < b's Bottom Right corner
+         a.y + a.height > b.y;    // on y: a's Top Right corner < b's Bottom Left corner
+}
 
 // function updateScore() {
 //   let point = Math.floor(50 * Math.random());
