@@ -1,16 +1,19 @@
-// import detectCollision from './detectCollision.js';
-// import { moveSkoker} from './moveSkoker.js';
-// // import { placePlatforms, newPlatform } from './platforms.js';
-// import { placePlatforms, newPlatform } from './platforms.js';
+// 1
+// определить начальные корды и поставить
+// на них облачко со Скокером на нём
 
-// board
+// 2
+// 'newPlatform' вставить в 'placePlatforms'
+
+import detectCollision from './detectCollision.js';
+
+// board init
 let board;
 let boardWidth = 600;
 let boardHeight = 800;
 let context;
-// export { boardWidth, boardHeight };
 
-// skoker
+// skoker init
 let skokerWidth = 46;
 let skokerHeight = 46;
 let skokerX = boardWidth/2 - skokerWidth/2;
@@ -25,14 +28,13 @@ let skoker = {
   height: skokerHeight
 }
 
-// physics
+// physics init
 let velocityX = 0;
-let velocityY = -10;
-let initialVelocityY = -7.5;
+let velocityY = 0;
+let initialVelocityY = -8;
 let gravity = 0.4;
-// export { velocityX, velocityY, initialVelocityY, gravity};
 
-// platforms
+// platforms init
 let arrPlatform = [];
 let platformImageWidth = 1000;
 let platformImageHeight = 336;
@@ -45,8 +47,8 @@ for (let i = 1; i <= 6; i++) {
   arrPlatformImages.push(`./images/clouds/cloud-right-${i}.png`);
   arrPlatformImages.push(`./images/clouds/cloud-left-${i}.png`);
 }
-// export { platformWidth, platformHeight, arrPlatform, arrPlatformImages };
 
+// score init
 let score = 0;
 
 window.onload = function() {
@@ -54,10 +56,6 @@ window.onload = function() {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext('2d');
-
-  // draw skoker
-  // context.fillStyle = 'green';
-  // context.fillRect(skoker.x, skoker.y, skoker.width, skoker.height);
 
   // load images
   skokerRightImage = new Image();
@@ -69,28 +67,14 @@ window.onload = function() {
   skokerRightImage.onload = function() {
     context.drawImage(skoker.image, skoker.x, skoker.y, skoker.width, skoker.height);
   }
-  //
-  // platformImage = new Image();
-  // platformImage.src = './images/clouds/cloud-left-1.png';
 
-  // platformImage.src = './images/cloud-done-2.35.png';
-  // platformImage.src = './images/cloud.png';
-  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
-
-  
-  // skoker.image = skokerRightImage;
-  // skokerRightImage.onload = function() {
-  //   context.drawImage(skoker.image, skoker.x, skoker.y, skoker.width, skoker.height);
-  // }
-
-  // velocityY = initialVelocityY;
+  velocityY = initialVelocityY;
   placePlatforms(arrPlatformImages);
   requestAnimationFrame(update);
   document.addEventListener('keydown', moveSkoker);
 }
 
 function update() {
-  // console.log(velocityY);
   requestAnimationFrame(update);
   context.clearRect(0, 0, board.width, board.height);
 
@@ -109,29 +93,13 @@ function update() {
   // platforms and velocityY
   for (let i = 0; i < arrPlatform.length; i++) {
     let platform = arrPlatform[i];
-    // if (i !== 0) {
-    //   let previousPlatform = arrPlatform[i-1];
-    // }
     if (velocityY < 0 && skoker.y < boardHeight*3/4) {
-      platform.y -= initialVelocityY*0.8; // drop platform down
+      platform.y -= initialVelocityY*0.8; // drop all platforms little bit down
     }
     if (detectCollision(skoker, platform) && velocityY >= 0) {
       velocityY = initialVelocityY; // jump from the platform
-      // for (let i = 0; i < arrPlatform.length; i++) {
-      //   console.log(arrPlatform[i]);  
-      // }
-      // console.log('jump');
-      // velocityY = initialVelocityY - 3; // jump from the platform
     }
     context.drawImage(platform.image, platform.x, platform.y, platform.width, platform.height);
-    
-    // if (typeof previousPlatform !== 'undefined') {
-    //   if (platform.y - previousPlatform.y > 50) {
-    //     context.drawImage(platform.image, platform.x, platform.y, platform.width, platform.height);
-    //   }
-    //   // else console.log(platform.y - previousPlatform.y);
-    // } else {
-    // }
   }
 
   while (arrPlatform.length > 0 && arrPlatform[0].y >= boardHeight+10) {
@@ -141,17 +109,16 @@ function update() {
   }
 
   // score
-  // updateScore();
   context.fillStyle = 'black';
   context.font = 'bold 50px Sans-Serif';
   context.fillText(score, 5, 42);
 }
 
-function moveSkoker(e) {
-  if (e.code == 'ArrowRight' || e.code == 'KeyD') {
+function moveSkoker(event) {
+  if (event.code == 'ArrowRight' || event.code == 'KeyD') {
     velocityX = 5;
     skoker.image = skokerRightImage;
-  } else if (e.code == 'ArrowLeft' || e.code == 'KeyA') {
+  } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
     velocityX = -5;
     skoker.image = skokerLeftImage;
   }
@@ -163,8 +130,6 @@ function randomInteger(min, max) { // min and max included
 }
 
 function placePlatforms() {
-  // arrPlatform = [];
-  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
 
   let platformImage = new Image();
   platformImage.src = arrPlatformImages[
@@ -173,49 +138,33 @@ function placePlatforms() {
   // 1-st (starting) platform
   let platform = {
     image: platformImage,
-    x: boardWidth,
+    x: boardWidth/2,
     // x: 0,
     y: boardHeight - 70,
     width: platformWidth,
-    // width: boardWidth,
     height: platformHeight
   }
 
   arrPlatform.push(platform);
 
-  // platform = {
-  //   image: platformImage,
-  //   x: boardWidth/2,
-  //   y: boardHeight - 250,
-  //   width: platformWidth,
-  //   height: platformHeight
-  // }
-
-  // arrPlatform.push(platform);
-
   for (let i = 0; i < 6; i++) {
     let randomX = Math.floor(Math.random() * boardWidth*3/4);
-    // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
     let platform = {
       image: platformImage,
       x: randomX,
       y: boardHeight - 160*i,
-      // y: boardHeight - 300,
       width: platformWidth,
       height: platformHeight
     }
   
     arrPlatform.push(platform);
-    // for (let i = 0; i < arrPlatform.length; i++) {
-    //   console.log(arrPlatform[i]);  
-    // }
-    // console.log('add more');
   }
 }
 
 function newPlatform() {
-  let randomX = Math.floor(Math.random() * boardWidth*3/4);
-  // platformImage.src = arrPlatformImages[randomInteger(1, 6)];
+  let coeffWidthPadding = boardWidth * 0.02;
+  let randomX = randomInteger(0 + boardWidth * coeffWidthPadding,
+    boardWidth * coeffWidthPadding - platformWidth);
 
   let platformImage = new Image();
   platformImage.src = arrPlatformImages[
@@ -224,7 +173,6 @@ function newPlatform() {
   let platform = {
     image: platformImage,
     x: randomX,
-    // y: -platformHeight,
     y: -platformHeight,
     width: platformWidth,
     height: platformHeight
@@ -232,32 +180,4 @@ function newPlatform() {
   if (arrPlatform[arrPlatform.length - 1].y !== platform.y) {
     arrPlatform.push(platform);
   }
-  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
-  // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
-  // console.log('-');
-  // if ((arrPlatform[arrPlatform.length - 1].y - platform.y < 55
-  //   && (arrPlatform[arrPlatform.length - 1].y - platform.y > -55))
-  // ) {
-  //   platform.y -= platformHeight*1;
-  // }
-  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
-  // console.log(arrPlatform[arrPlatform.length - 1].y - platform.y);
-  // arrPlatform.push(platform);
-  // for (let i = 0; i < arrPlatform.length; i++) {
-  //   console.log(arrPlatform[i]);  
-  // }
-  // console.log('add 1');
-  // console.log(arrPlatform[arrPlatform.length - 1].y, platform.y);
 }
-
-function detectCollision(a, b) {
-  return a.x < b.x + b.width &&   // on x: a's Top Left corner < b's Top Right corner
-         a.x + a.width > b.x &&   // on x: a's Top Right corner < b's Top Left corner
-         a.y < b.y + b.height &&  // on y: a's Top Left corner < b's Bottom Right corner
-         a.y + a.height > b.y;    // on y: a's Top Right corner < b's Bottom Left corner
-}
-
-// function updateScore() {
-//   let point = Math.floor(50 * Math.random());
-//   score += 1;
-// }
