@@ -1,10 +1,3 @@
-// 1
-// определить начальные корды и поставить
-// на них облачко со Скокером на нём
-
-// 2
-// 'newPlatform' вставить в 'placePlatforms'
-
 import detectCollision from './detectCollision.js';
 import randomInteger from './randomInteger.js';
 
