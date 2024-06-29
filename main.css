@@ -1,10 +1,10 @@
 body {
   text-align: center;
+  margin: 0;
 }
 
 #board {
-  /* background-color: green; */
   /* background-image: url('./images/sky_1200x1562.jpg'); */
-  background-image: url('./images/sky_1440-1880.png');
   /* background-image: url('./images/sky_1200-1600.png'); */
+  background-image: url('./images/sky_1440-1880.png');
 }
