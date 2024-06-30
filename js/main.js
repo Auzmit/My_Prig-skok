@@ -30,11 +30,11 @@ let skoker = {
 
 // platforms init
 let arrPlatform = [];
-const platformImageWidth = 1000;
-const platformImageHeight = 336;
+const platformImageWidth = 1200; // 142,85714285714285714285714285714
+const platformImageHeight = 336; // 48
 const coeffImageToPlatform = 7;
-const platformWidth = platformImageWidth/coeffImageToPlatform;
-const platformHeight = platformImageHeight/coeffImageToPlatform;
+const platformWidth = (platformImageWidth-200)/coeffImageToPlatform; // 142,85
+const platformHeight = platformImageHeight/coeffImageToPlatform; // 48
 let platformImage;
 let arrPlatformImages = [];
 for (let i = 1; i <= 6; i++) {
@@ -90,9 +90,6 @@ function update() {
     let platform = arrPlatform[i];
     if (velocityY < 0 && skoker.y < boardHeight*0.74) {
       platform.y -= initialVelocityY*0.7; // shift all plats little down
-      for (let i = 0; i < arrPlatform.length; i ++) {
-        console.log(arrPlatform[i]);
-      };
     }
     if (detectCollision(skoker, platform) && velocityY >= 0) {
       velocityY = initialVelocityY; // jump from the platform
