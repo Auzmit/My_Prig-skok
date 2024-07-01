@@ -10,13 +10,14 @@ let context;
 // physics init
 let velocityX = 0;
 let velocityY = 0;
-let initialVelocityY = -8;
-let gravity = 0.4;
+let initialVelocityY = -boardWidth/71; // 60 => -10
+let gravity = boardWidth/1500; // 1500 => 0.4
 
 // skoker init
-let skokerWidth = 46;
-let skokerHeight = 46;
+let skokerWidth = boardWidth/13; // 13 => 46,1538...
+let skokerHeight = skokerWidth;
 let skokerX = boardWidth/2 - skokerWidth/2;
+// let skokerY = boardHeight - boardWidth*0.5 - skokerHeight;
 let skokerY = boardHeight*0.9 - skokerHeight;
 let skokerLeftImage;
 let skokerRightImage;
@@ -30,12 +31,11 @@ let skoker = {
 
 // platforms init
 let arrPlatform = [];
-const platformImageWidth = 1200; // 142,85714285714285714285714285714
-const platformImageHeight = 336; // 48
-const coeffImageToPlatform = 7;
-const platformWidth = (platformImageWidth-200)/coeffImageToPlatform; // 142,85
-const platformHeight = platformImageHeight/coeffImageToPlatform; // 48
-let platformImage;
+// const platformImageWidth = 1200;
+// const platformImageHeight = 336;
+const platformWidth = boardWidth/5;
+const platformHeight = platformWidth/3.57;
+// let platformImage;
 let arrPlatformImages = [];
 for (let i = 1; i <= 6; i++) {
   arrPlatformImages.push(`./images/clouds/cloud-right-${i}.png`);
@@ -59,7 +59,8 @@ window.onload = function() {
   //
   skoker.image = skokerRightImage;
   skokerRightImage.onload = function() {
-    context.drawImage(skoker.image, skoker.x, skoker.y, skoker.width, skoker.height);
+    context.drawImage(skoker.image, skoker.x,
+      skoker.y, skoker.width, skoker.height);
   };
 
   velocityY = initialVelocityY;
@@ -83,21 +84,26 @@ function update() {
     skoker.x = board.width;
   };
   //
-  context.drawImage(skoker.image, skoker.x, skoker.y, skoker.width, skoker.height);
+  context.drawImage(skoker.image, skoker.x,
+    skoker.y, skoker.width, skoker.height);
 
   // platforms and velocityY
   for (let i = 0; i < arrPlatform.length; i++) {
     let platform = arrPlatform[i];
-    if (velocityY < 0 && skoker.y < boardHeight*0.74) {
-      platform.y -= initialVelocityY*0.7; // shift all plats little down
+    if (velocityY < 0 && skoker.y < boardHeight*0.73) {
+      // shift all plats little down:
+      platform.y -= initialVelocityY*0.7;
     }
     if (detectCollision(skoker, platform) && velocityY >= 0) {
       velocityY = initialVelocityY; // jump from the platform
+      // console.log('jump');
     }
-    context.drawImage(platform.image, platform.x, platform.y, platform.width, platform.height);
+    context.drawImage(platform.image, platform.x,
+      platform.y, platform.width, platform.height);
   };
 
-  while (arrPlatform.length > 0 && arrPlatform[0].y >= boardHeight) {
+  // arrPlatform.length > 0
+  while (arrPlatform[0].y >= boardHeight) {
     arrPlatform.shift();
     newPlatform();
     score += 1;
@@ -105,16 +111,17 @@ function update() {
 
   // score draw
   context.fillStyle = 'black';
-  context.font = 'bold 50px Sans-Serif';
-  context.fillText(score, 5, 42);
+  context.font = `bold ${boardWidth/12}px Sans-Serif`;
+  // console.log(context.font);
+  context.fillText(score, boardWidth/120, boardWidth/15);
 }
 
 function moveSkoker(event) {
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
-    velocityX = 5;
+    velocityX = boardWidth/120;
     skoker.image = skokerRightImage;
   } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
-    velocityX = -5;
+    velocityX = -boardWidth/120;
     skoker.image = skokerLeftImage;
   };
 };
@@ -141,8 +148,7 @@ function placePlatforms() {
 
 function newPlatform() {
   // X-coord randoming with little indent on left & right
-  let coeffWidthPadding = 0.02;
-  let widthPadding = boardWidth * coeffWidthPadding;
+  let widthPadding = boardWidth*0.02;
   let randomX = randomInteger(widthPadding,
     boardWidth - widthPadding - platformWidth);
 
@@ -153,7 +159,8 @@ function newPlatform() {
   let platform = {
     image: platformImage,
     x: randomX,
-    y: arrPlatform[arrPlatform.length - 1].y - 100 - randomInteger(0, 60),
+    y: arrPlatform[arrPlatform.length - 1].y - boardWidth/6
+      - randomInteger(0, boardWidth/10.5),
     // y: arrPlatform[arrPlatform.length - 1].y - 160,
     width: platformWidth,
     height: platformHeight
