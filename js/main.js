@@ -6,11 +6,13 @@ let board;
 let boardWidth = 600;
 let boardHeight = 800;
 let context;
+let cl;
 
 // physics init
-let velocityX = 0;
-let velocityY = 0;
+let initialvelocityX = 0;
+let velocityX = initialvelocityX;
 let initialVelocityY = -boardWidth/71; // 60 => -10
+let velocityY = initialvelocityX;
 let gravity = boardWidth/1500; // 1500 => 0.4
 
 // skoker init
@@ -30,12 +32,12 @@ let skoker = {
 }
 
 // platforms init
-let arrPlatform = [];
 // const platformImageWidth = 1200;
 // const platformImageHeight = 336;
 const platformWidth = boardWidth/5;
 const platformHeight = platformWidth/3.57;
 // let platformImage;
+let arrPlatform = [];
 let arrPlatformImages = [];
 for (let i = 1; i <= 6; i++) {
   arrPlatformImages.push(`./images/clouds/cloud-right-${i}.png`);
@@ -45,7 +47,40 @@ for (let i = 1; i <= 6; i++) {
 // score init
 let score = 0;
 
-window.onload = function() {
+let state = {
+  canvas: {
+    board,
+    boardWidth,
+    boardHeight,
+    context
+  },
+  physics: {
+    velocityX,
+    velocityY,
+    initialVelocityY,
+    gravity
+  },
+  character: {
+    skokerWidth,
+    skokerHeight,
+    skokerX,
+    skokerY,
+    skokerLeftImage,
+    skokerRightImage,
+    skoker
+  },
+  platforms: {
+    platformWidth,
+    platformHeight,
+    arrPlatform,
+    arrPlatformImages
+  },
+  score
+}
+
+window.onload = init();
+
+function init() {
   board = document.getElementById('board');
   board.height = boardHeight;
   board.width = boardWidth;
@@ -58,19 +93,49 @@ window.onload = function() {
   skokerLeftImage.src = './images/head-left.png';
   //
   skoker.image = skokerRightImage;
+  skoker.x = skokerX;
+  skoker.y = skokerY;
   skokerRightImage.onload = function() {
     context.drawImage(skoker.image, skoker.x,
       skoker.y, skoker.width, skoker.height);
   };
 
+  velocityX = initialvelocityX;
   velocityY = initialVelocityY;
   placePlatforms(arrPlatformImages);
-  requestAnimationFrame(update);
+
+  // !!!
+  // requestAnimationFrame(update);
+  // console.log(cl);
+
+  // if (typeof cl !== "undefined") {
+  //   console.log('clearInterval');
+  // } else {
+  //   clearInterval(cl);
+  //   console.log('cl is', typeof cl);
+  //   // console.log('not clear...');
+  // }
+  // setInterval(update, 1000);
+  // if (::cl.isInitialized) clearInterval(cl);
+  cl = setInterval(update, 16); // 16
+  // setInterval(update, 16);
+  // console.log('cl is', typeof cl, cl);
+  // cl;
+  // console.log(cl);
+
   document.addEventListener('keydown', moveSkoker);
 };
 
 function update() {
-  requestAnimationFrame(update);
+  // requestAnimationFrame(update);
+  // if (typeof cl() === undefined) clearInterval(cl);
+  clearInterval(cl);
+  // console.log(cl);
+  cl = setInterval(update, 16);
+  // console.log(cl);
+  // console.log(typeof cl);
+  // const cl = setInterval(update, 16);
+  // cl();
   context.clearRect(0, 0, board.width, board.height);
 
   // draw skoker
@@ -123,10 +188,17 @@ function moveSkoker(event) {
   } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
     velocityX = -boardWidth/120;
     skoker.image = skokerLeftImage;
+  } else if (event.code == 'KeyR') {
+    // clearInterval(cl);
+    init();
+    // velocityX = 0;
+    // context.clearRect(0, 0, board.width, board.height);
+    // skoker.image = skokerLeftImage;
   };
 };
 
 function placePlatforms() {
+  arrPlatform = [];
   let platformImage = new Image();
   platformImage.src = arrPlatformImages[
     randomInteger(0, arrPlatformImages.length - 1)];
