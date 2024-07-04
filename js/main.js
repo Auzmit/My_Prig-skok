@@ -6,7 +6,9 @@ let board;
 let boardWidth = 600;
 let boardHeight = 800;
 let context;
-let cl;
+// starting 'f_update' every x ms
+// with the help of 'setInterval':
+let lntervalledUpdate;
 
 // physics init
 let initialvelocityX = 0;
@@ -47,40 +49,42 @@ for (let i = 1; i <= 6; i++) {
 // score init
 let score = 0;
 
-let state = {
-  canvas: {
-    board,
-    boardWidth,
-    boardHeight,
-    context
-  },
-  physics: {
-    velocityX,
-    velocityY,
-    initialVelocityY,
-    gravity
-  },
-  character: {
-    skokerWidth,
-    skokerHeight,
-    skokerX,
-    skokerY,
-    skokerLeftImage,
-    skokerRightImage,
-    skoker
-  },
-  platforms: {
-    platformWidth,
-    platformHeight,
-    arrPlatform,
-    arrPlatformImages
-  },
-  score
-}
+// let state = {
+//   canvas: {
+//     board,
+//     boardWidth,
+//     boardHeight,
+//     context
+//   },
+//   physics: {
+//     velocityX,
+//     velocityY,
+//     initialVelocityY,
+//     gravity
+//   },
+//   character: {
+//     skokerWidth,
+//     skokerHeight,
+//     skokerX,
+//     skokerY,
+//     skokerLeftImage,
+//     skokerRightImage,
+//     skoker
+//   },
+//   platforms: {
+//     platformWidth,
+//     platformHeight,
+//     arrPlatform,
+//     arrPlatformImages
+//   },
+//   score
+// };
 
 window.onload = init();
 
 function init() {
+  score = 0;
+
   board = document.getElementById('board');
   board.height = boardHeight;
   board.width = boardWidth;
@@ -104,41 +108,28 @@ function init() {
   velocityY = initialVelocityY;
   placePlatforms(arrPlatformImages);
 
-  // !!!
+  // 1-st variation of looped 'update':
   // requestAnimationFrame(update);
-  // console.log(cl);
 
-  // if (typeof cl !== "undefined") {
-  //   console.log('clearInterval');
-  // } else {
-  //   clearInterval(cl);
-  //   console.log('cl is', typeof cl);
-  //   // console.log('not clear...');
+  // 2-nd variation of looped 'update':
+  // while (updateFlag) setInterval(update, 16);
+  // if (!updateFlag) {
+  //   updateFlag = true;
   // }
-  // setInterval(update, 1000);
-  // if (::cl.isInitialized) clearInterval(cl);
-  cl = setInterval(update, 16); // 16
-  // setInterval(update, 16);
-  // console.log('cl is', typeof cl, cl);
-  // cl;
-  // console.log(cl);
 
+  // 3-rd variation of looped 'update':
+  clearInterval(lntervalledUpdate);
+  lntervalledUpdate = setInterval(update, 16);
+  
   document.addEventListener('keydown', moveSkoker);
+  // console.log('initializating');
 };
 
 function update() {
   // requestAnimationFrame(update);
-  // if (typeof cl() === undefined) clearInterval(cl);
-  clearInterval(cl);
-  // console.log(cl);
-  cl = setInterval(update, 16);
-  // console.log(cl);
-  // console.log(typeof cl);
-  // const cl = setInterval(update, 16);
-  // cl();
   context.clearRect(0, 0, board.width, board.height);
 
-  // draw skoker
+  // update skoker
   velocityY += gravity;
   skoker.y += velocityY;
   skoker.x += velocityX;
@@ -151,14 +142,16 @@ function update() {
   //
   context.drawImage(skoker.image, skoker.x,
     skoker.y, skoker.width, skoker.height);
+    
+  scrollDown();
 
-  // platforms and velocityY
+  // update platforms and velocityY-jump
   for (let i = 0; i < arrPlatform.length; i++) {
     let platform = arrPlatform[i];
-    if (velocityY < 0 && skoker.y < boardHeight*0.73) {
-      // shift all plats little down:
-      platform.y -= initialVelocityY*0.7;
-    }
+    // if (velocityY < 0 && skoker.y < boardHeight*0.90) {
+    //   // shift all plats little down:
+    //   platform.y -= velocityY*0.9;
+    // }
     if (detectCollision(skoker, platform) && velocityY >= 0) {
       velocityY = initialVelocityY; // jump from the platform
       // console.log('jump');
@@ -181,6 +174,28 @@ function update() {
   context.fillText(score, boardWidth/120, boardWidth/15);
 }
 
+function scrollDown() {
+  if (velocityY < 0) {
+    // if (skoker.y < boardHeight*0.50) {
+    //   skoker.y -= velocityY*4;
+    //   for (let i = 0; i < arrPlatform.length; i++) {
+    //     let platform = arrPlatform[i];
+    //       // platform.y -= initialVelocityY*0.7;
+    //       platform.y -= velocityY*4;
+    //   }
+    // } else
+    if (skoker.y < boardHeight*0.90) {
+      // shift skoker & all plats little down:
+      // skoker.y -= initialVelocityY*0.7;
+      for (let i = 0; i < arrPlatform.length; i++) {
+        let platform = arrPlatform[i];
+          // platform.y -= initialVelocityY*0.7;
+          platform.y -= velocityY;
+      }
+    }
+  }
+}
+
 function moveSkoker(event) {
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
     velocityX = boardWidth/120;
@@ -194,6 +209,9 @@ function moveSkoker(event) {
     // velocityX = 0;
     // context.clearRect(0, 0, board.width, board.height);
     // skoker.image = skokerLeftImage;
+  } else if (event.code == 'KeyQ') {
+    // updateFlag = false;
+    clearInterval(cl);
   };
 };
 
