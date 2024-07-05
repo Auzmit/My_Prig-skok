@@ -131,7 +131,9 @@ function update() {
 
   // update skoker
   velocityY += gravity;
-  skoker.y += velocityY;
+  
+  scrollDown();
+
   skoker.x += velocityX;
   // jump from side to side of the screen
   if (skoker.x > board.width) {
@@ -143,7 +145,6 @@ function update() {
   context.drawImage(skoker.image, skoker.x,
     skoker.y, skoker.width, skoker.height);
     
-  scrollDown();
 
   // update platforms and velocityY-jump
   for (let i = 0; i < arrPlatform.length; i++) {
@@ -170,30 +171,28 @@ function update() {
   // score draw
   context.fillStyle = 'black';
   context.font = `bold ${boardWidth/12}px Sans-Serif`;
-  // console.log(context.font);
   context.fillText(score, boardWidth/120, boardWidth/15);
+
+  console.log(velocityY, initialVelocityY);
 }
 
 function scrollDown() {
+  // shift skoker, all plats little down:
   if (velocityY < 0) {
-    // if (skoker.y < boardHeight*0.50) {
-    //   skoker.y -= velocityY*4;
-    //   for (let i = 0; i < arrPlatform.length; i++) {
-    //     let platform = arrPlatform[i];
-    //       // platform.y -= initialVelocityY*0.7;
-    //       platform.y -= velocityY*4;
-    //   }
-    // } else
-    if (skoker.y < boardHeight*0.90) {
-      // shift skoker & all plats little down:
-      // skoker.y -= initialVelocityY*0.7;
+    if (skoker.y < boardHeight*0.8) {
       for (let i = 0; i < arrPlatform.length; i++) {
         let platform = arrPlatform[i];
-          // platform.y -= initialVelocityY*0.7;
+          platform.y -= velocityY*2;
+      }
+    } else
+    if (skoker.y < boardHeight*0.90) {
+      skoker.y += velocityY;
+      for (let i = 0; i < arrPlatform.length; i++) {
+        let platform = arrPlatform[i];
           platform.y -= velocityY;
       }
     }
-  }
+  } else skoker.y += velocityY;
 }
 
 function moveSkoker(event) {
