@@ -108,32 +108,17 @@ function init() {
   velocityY = initialVelocityY;
   placePlatforms(arrPlatformImages);
 
-  // 1-st variation of looped 'update':
-  // requestAnimationFrame(update);
-
-  // 2-nd variation of looped 'update':
-  // while (updateFlag) setInterval(update, 16);
-  // if (!updateFlag) {
-  //   updateFlag = true;
-  // }
-
   // 3-rd variation of looped 'update':
   clearInterval(lntervalledUpdate);
   lntervalledUpdate = setInterval(update, 16);
   
   document.addEventListener('keydown', moveSkoker);
-  // console.log('initializating');
 };
 
 function update() {
-  // requestAnimationFrame(update);
   context.clearRect(0, 0, board.width, board.height);
 
-  // update skoker
-  velocityY += gravity;
-  
-  scrollDown();
-
+  // update skoker.x
   skoker.x += velocityX;
   // jump from side to side of the screen
   if (skoker.x > board.width) {
@@ -141,27 +126,37 @@ function update() {
   } else if (skoker.x + skoker.width < 0) {
     skoker.x = board.width;
   };
+
+  // shift skoker & all clouds little down:
+  velocityY += gravity;
+  if (velocityY < 0) {
+    // shift 2 times clouds,
+    // because skoker can jump out from top of screen
+    if (skoker.y < boardHeight * 0.4) {
+      for (const platform of arrPlatform) {
+        platform.y -= velocityY * 2;
+      }
+    // normal shift - clouds & skoker
+    } else if (skoker.y < boardHeight) {
+      skoker.y += velocityY;
+      for (const platform of arrPlatform) {
+        platform.y -= velocityY;
+      }
+    }
+  } else skoker.y += velocityY;
   //
   context.drawImage(skoker.image, skoker.x,
     skoker.y, skoker.width, skoker.height);
-    
 
-  // update platforms and velocityY-jump
-  for (let i = 0; i < arrPlatform.length; i++) {
-    let platform = arrPlatform[i];
-    // if (velocityY < 0 && skoker.y < boardHeight*0.90) {
-    //   // shift all plats little down:
-    //   platform.y -= velocityY*0.9;
-    // }
+  // jump from the cloud & draw cloud's
+  for (const platform of arrPlatform) {
     if (detectCollision(skoker, platform) && velocityY >= 0) {
-      velocityY = initialVelocityY; // jump from the platform
-      // console.log('jump');
+      velocityY = initialVelocityY;
     }
     context.drawImage(platform.image, platform.x,
       platform.y, platform.width, platform.height);
   };
-
-  // arrPlatform.length > 0
+  
   while (arrPlatform[0].y >= boardHeight) {
     arrPlatform.shift();
     newPlatform();
@@ -173,26 +168,7 @@ function update() {
   context.font = `bold ${boardWidth/12}px Sans-Serif`;
   context.fillText(score, boardWidth/120, boardWidth/15);
 
-  console.log(velocityY, initialVelocityY);
-}
-
-function scrollDown() {
-  // shift skoker, all plats little down:
-  if (velocityY < 0) {
-    if (skoker.y < boardHeight*0.8) {
-      for (let i = 0; i < arrPlatform.length; i++) {
-        let platform = arrPlatform[i];
-          platform.y -= velocityY*2;
-      }
-    } else
-    if (skoker.y < boardHeight*0.90) {
-      skoker.y += velocityY;
-      for (let i = 0; i < arrPlatform.length; i++) {
-        let platform = arrPlatform[i];
-          platform.y -= velocityY;
-      }
-    }
-  } else skoker.y += velocityY;
+  // console.log(velocityY, initialVelocityY);
 }
 
 function moveSkoker(event) {
@@ -203,14 +179,9 @@ function moveSkoker(event) {
     velocityX = -boardWidth/120;
     skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyR') {
-    // clearInterval(cl);
     init();
-    // velocityX = 0;
-    // context.clearRect(0, 0, board.width, board.height);
-    // skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyQ') {
-    // updateFlag = false;
-    clearInterval(cl);
+    clearInterval(lntervalledUpdate);
   };
 };
 
@@ -250,7 +221,6 @@ function newPlatform() {
     x: randomX,
     y: arrPlatform[arrPlatform.length - 1].y - boardWidth/6
       - randomInteger(0, boardWidth/10.5),
-    // y: arrPlatform[arrPlatform.length - 1].y - 160,
     width: platformWidth,
     height: platformHeight
   };
