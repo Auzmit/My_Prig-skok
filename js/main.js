@@ -9,11 +9,13 @@ let context;
 // starting 'f_update' every x ms
 // with the help of 'setInterval':
 let lntervalledUpdate;
+let gameOverFlag = false;
 
 // physics init
 let initialvelocityX = 0;
 let velocityX = initialvelocityX;
 let initialVelocityY = -boardWidth/71; // 60 => -10
+// let initialVelocityY = -boardWidth/60; // 60 => -10
 let velocityY = initialvelocityX;
 let gravity = boardWidth/1500; // 1500 => 0.4
 
@@ -84,6 +86,7 @@ window.onload = init();
 
 function init() {
   score = 0;
+  gameOverFlag = false;
 
   board = document.getElementById('board');
   board.height = boardHeight;
@@ -116,73 +119,82 @@ function init() {
 };
 
 function update() {
-  context.clearRect(0, 0, board.width, board.height);
-
-  // update skoker.x
-  skoker.x += velocityX;
-  // jump from side to side of the screen
-  if (skoker.x > board.width) {
-    skoker.x = 0;
-  } else if (skoker.x + skoker.width < 0) {
-    skoker.x = board.width;
-  };
-
-  // shift skoker & all clouds little down:
-  velocityY += gravity;
-  if (velocityY < 0) {
-    // shift 2 times clouds,
-    // because skoker can jump out from top of screen
-    if (skoker.y < boardHeight * 0.4) {
-      for (const platform of arrPlatform) {
-        platform.y -= velocityY * 2;
+  // console.log('update');
+  if (skoker.y > boardHeight) {
+    gameOver();
+    clearInterval(lntervalledUpdate);
+  } else {
+    context.clearRect(0, 0, board.width, board.height);
+    
+    // update skoker.x
+    skoker.x += velocityX;
+    // jump from side to side of the screen
+    if (skoker.x > board.width) {
+      skoker.x = 0;
+    } else if (skoker.x + skoker.width < 0) {
+      skoker.x = board.width;
+    };
+  
+    // shift skoker & all clouds little down:
+    velocityY += gravity;
+    if (velocityY < 0) {
+      // shift 2 times clouds,
+      // because skoker can jump out from top of screen
+      if (skoker.y < boardHeight * 0.4) {
+        for (const platform of arrPlatform) {
+          platform.y -= velocityY * 2;
+        }
+      // normal shift - clouds & skoker
+      } else if (skoker.y < boardHeight) {
+        skoker.y += velocityY;
+        for (const platform of arrPlatform) {
+          platform.y -= velocityY;
+        }
       }
-    // normal shift - clouds & skoker
-    } else if (skoker.y < boardHeight) {
-      skoker.y += velocityY;
-      for (const platform of arrPlatform) {
-        platform.y -= velocityY;
+    } else skoker.y += velocityY;
+    //
+    context.drawImage(skoker.image, skoker.x,
+      skoker.y, skoker.width, skoker.height);
+  
+    // jump from the cloud & draw cloud's
+    for (const platform of arrPlatform) {
+      if (detectCollision(skoker, platform) && velocityY >= 0) {
+        velocityY = initialVelocityY;
       }
-    }
-  } else skoker.y += velocityY;
-  //
-  context.drawImage(skoker.image, skoker.x,
-    skoker.y, skoker.width, skoker.height);
-
-  // jump from the cloud & draw cloud's
-  for (const platform of arrPlatform) {
-    if (detectCollision(skoker, platform) && velocityY >= 0) {
-      velocityY = initialVelocityY;
-    }
-    context.drawImage(platform.image, platform.x,
-      platform.y, platform.width, platform.height);
+      context.drawImage(platform.image, platform.x,
+        platform.y, platform.width, platform.height);
+    };
+    
+    while (arrPlatform[0].y >= boardHeight) {
+      arrPlatform.shift();
+      newPlatform();
+      score += 1;
+    };
+  
+    // score draw
+    context.fillStyle = 'black';
+    context.font = `bold ${boardWidth/12}px Sans-Serif`;
+    context.fillText(score, boardWidth/120, boardWidth/15);
+    // context.font = "50px serif";
+    // context.fillText('Game Over', 50, 90);
+    // console.log(context);
+  
+    // console.log(velocityY, initialVelocityY);
   };
   
-  while (arrPlatform[0].y >= boardHeight) {
-    arrPlatform.shift();
-    newPlatform();
-    score += 1;
-  };
-
-  // score draw
-  context.fillStyle = 'black';
-  context.font = `bold ${boardWidth/12}px Sans-Serif`;
-  context.fillText(score, boardWidth/120, boardWidth/15);
-
-  // console.log(velocityY, initialVelocityY);
 }
 
 function moveSkoker(event) {
+  let shiftSkokerX = boardWidth/120;
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
-    velocityX = boardWidth/120;
+    velocityX = shiftSkokerX;
     skoker.image = skokerRightImage;
   } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
-    velocityX = -boardWidth/120;
+    velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyR') {
-    init();
-  } else if (event.code == 'KeyQ') {
-    clearInterval(lntervalledUpdate);
-  };
+    if (gameOverFlag) init();
+  }
 };
 
 function placePlatforms() {
@@ -227,3 +239,19 @@ function newPlatform() {
 
   arrPlatform.push(platform);
 };
+
+function gameOver() {
+  // console.log('Game Over');
+  gameOverFlag = true;
+
+  let gradient = context.createLinearGradient(0, 0, boardWidth, 0);
+  gradient.addColorStop("0","magenta");
+  gradient.addColorStop("0.5","blue");
+  gradient.addColorStop("1.0","red");
+
+  context.fillStyle = gradient;
+  context.font = `bold ${boardWidth/8}px Sans-Serif`;
+  context.textAlign = 'center';
+
+  context.fillText('Game Over', boardWidth/2, boardWidth/2);
+}

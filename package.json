@@ -16,5 +16,7 @@
   "bugs": {
     "url": "https://github.com/Auzmit/Prig-skok/issues"
   },
-  "homepage": "https://github.com/Auzmit/Prig-skok#readme"
+  "homepage": "https://github.com/Auzmit/Prig-skok#readme",
+  "devDependencies": {
+  }
 }
