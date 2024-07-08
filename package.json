@@ -17,6 +17,8 @@
     "url": "https://github.com/Auzmit/Prig-skok/issues"
   },
   "homepage": "https://github.com/Auzmit/Prig-skok#readme",
-  "devDependencies": {
+  "dependencies": {
+    "eslint": "^9.6.0",
+    "mkdirp": "^3.0.1"
   }
 }
