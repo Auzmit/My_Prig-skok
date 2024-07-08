@@ -251,9 +251,9 @@ function newPlatform() {
   }
 
   // check certain color
-  platform.image.src =
-    'images/clouds/colored/cloud-left-1-grey.png';
-  platform.color = platform.image.src.split('-').pop().split('.')[0];
+  // platform.image.src =
+  //   'images/clouds/colored/cloud-left-1-grey.png';
+  // platform.color = platform.image.src.split('-').pop().split('.')[0];
 
   // check certain color through white
   // if (platform.color !== 'white') {
@@ -272,7 +272,7 @@ function detectColor(skoker, platform) {
   } else side = 'left';
 
   if (platform.color === 'yellow') {
-    velocityY = initialVelocityY * 1.8;
+    velocityY = initialVelocityY * 2.2;
   } else if (platform.color === 'blue') {
     
   } else if (platform.color === 'grey') {
