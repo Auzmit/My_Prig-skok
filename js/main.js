@@ -118,16 +118,16 @@ function update() {
       skoker.x = board.width;
     };
   
-    // shift skoker & all clouds little down:
+    // shift skoker & all platforms little down:
     velocityY += gravity;
     if (velocityY < 0) {
-      // shift 2 times clouds,
+      // shift 2 times platforms,
       // because skoker can jump out from top of screen
       if (skoker.y < boardHeight * 0.4) {
         for (const platform of arrPlatform) {
           platform.y -= velocityY * 2;
         }
-      // normal shift - clouds & skoker
+      // normal shift - platforms & skoker
       } else if (skoker.y < boardHeight) {
         skoker.y += velocityY;
         for (const platform of arrPlatform) {
@@ -136,7 +136,7 @@ function update() {
       }
     } else skoker.y += velocityY;
   
-    // jump from the cloud & draw cloud's
+    // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
       if (detectCollision(skoker, platform) && velocityY >= 0) {
         detectColor(skoker, platform);
@@ -238,7 +238,7 @@ function newPlatform() {
     height: platformHeight
   };
 
-  // clouds' white & colored images
+  // platforms' white & colored images
   if (randomInteger(1, 100) >= 85) {
     platform.image.src = platformColorsImages[
       randomInteger(0, platformColorsImages.length - 1)];
@@ -268,95 +268,43 @@ function detectColor(skoker, platform) {
   velocityY = initialVelocityY;
   let side = '';
   if (randomInteger(0, 1) === 0) {
-    side = 'right'
+    side = 'right';
   } else side = 'left';
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
   } else if (platform.color === 'blue') {
-    for (let i = 0; i < arrPlatform.length; i++) {
-      console.log(arrPlatform[i].x);
-    }
+    // mirroring skoker & platforms
+    velocityX = -velocityX;
+    if (skoker.image === skokerRightImage) {
+      skoker.image = skokerLeftImage;
+    } else skoker.image = skokerRightImage;
 
-    // console.log(platform.x);
-    // console.log(boardWidth/2);
-    // console.log(platform.width);
-    for (let i = 0; i < arrPlatform.length; i++) {
-      let platformCenter = arrPlatform[i].x + platformWidth/2;
-      // let coeffMirrorX = platformCenter - boardWidth/2;
-      // platformCenter = -platformCenter;
+    for (let currentPlatform of arrPlatform) {
+      let platformCenter = currentPlatform.x + platformWidth/2;
       if (platformCenter >= boardWidth/2) {
         platformCenter = boardWidth/2 - (platformCenter - boardWidth/2);
-        // arrPlatform[i].x = platformCenter - platformWidth/2;
-        // coeffMirrorX = platformCenter - boardWidth/2;
-        // coeffMirrorX = coeffMirrorX*2
       } else {
         platformCenter = boardWidth/2 + (boardWidth/2 - platformCenter);
-        // coeffMirrorX = (-coeffMirrorX)*2 - platform.width;
-        // coeffMirrorX = (coeffMirrorX + platformWidth) * 2;
       }
-      arrPlatform[i].x = platformCenter - platformWidth/2;
-
-      // let coeffMirrorX = arrPlatform[i].x - boardWidth/2;
-      // if (coeffMirrorX >= 0) {
-      //   coeffMirrorX = - (coeffMirrorX*2 + platform.width);
-      // } else {
-      //   // coeffMirrorX = (-coeffMirrorX)*2 - platform.width;
-      //   if (Math.abs(coeffMirrorX) < platform.width) {
-      //     coeffMirrorX = -(platform.width - 2*Math.abs(coeffMirrorX));
-      //   } else {
-      //     coeffMirrorX = -coeffMirrorX*2 + platform.width;
-      //   }
-      //   coeffMirrorX = (coeffMirrorX + platform.width) * 2;
-      // }
-      
-      // let coeffMirrorX;
-      // if (arrPlatform[i].x >= boardWidth/2) {
-      //   coeffMirrorX = arrPlatform[i].x - boardWidth/2;
-      //   coeffMirrorX = -(coeffMirrorX*2 + platform.width);
-      // } else {
-        //   coeffMirrorX = arrPlatform[i].x + platform.width;
-        //   coeffMirrorX = boardWidth/2 - coeffMirrorX;
-      //   coeffMirrorX = arrPlatform[i].x + coeffMirrorX*2;
-      // }
-
-      // let coeffMirrorX;
-      // if (arrPlatform[i].x >= boardWidth/2) {
-        //   coeffMirrorX = boardWidth - arrPlatform[i].x + platformWidth; 
-        // } else {
-          
-        // }
-
-      // arrPlatform[i].x += coeffMirrorX;
+      currentPlatform.x = platformCenter - platformWidth/2;
     }
-    console.log('');
-    for (let i = 0; i < arrPlatform.length; i++) {
-      console.log(arrPlatform[i].x);
-    }
-    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
-
   } else if (platform.color === 'grey') {
+    // grey turns to black
     platform.color = 'black';
     platform.image.src = 
       `./images/clouds/colored/cloud-${side}-1-black.png`;
-
   } else if (platform.color === 'black') {
+    // black disappear
     platform.image.src = './images/clouds/transparent_1x1.png';
     platform.collision = false;
-
   } else if (platform.color === 'red') {
+    // explodes - farther skoker is from the center of the platform,
+    // harder kicks him away along X & disappear
     let xDistanceSkokerPlatform = (skoker.x + skoker.width/2)
       - (platform.x + platform.width/2);
-    // чем дальше скокер от центра облачка,
-    // тем слабее его запуливает по X от облачка
     let coeffShiftSkokerX = xDistanceSkokerPlatform/(platform.width/2);
-    coeffShiftSkokerX *= 0.3; 
-
-    // if (coeffShiftSkokerX >= 0) {
-    //   coeffShiftSkokerX += 1;
-    // } else if (coeffShiftSkokerX < 0) {
-    //   coeffShiftSkokerX -= 1;
-    // }
+    coeffShiftSkokerX *= 0.3;
 
     coeffShiftSkokerX += (coeffShiftSkokerX >= 0) ? 1 : -1;
     velocityX = shiftSkokerX * coeffShiftSkokerX;
@@ -370,7 +318,6 @@ function detectColor(skoker, platform) {
 }
 
 function gameOver() {
-  // console.log('Game Over');
   gameOverFlag = true;
 
   let gradient = context.createLinearGradient(0, 0, boardWidth, 0);
