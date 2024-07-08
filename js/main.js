@@ -15,9 +15,12 @@ let gameOverFlag = false;
 // physics init
 let initialVelocityX = 0;
 let velocityX = initialVelocityX;
+let inialShiftSkokerX = boardWidth/120;
+let shiftSkokerX = inialShiftSkokerX;
 let initialVelocityY = -boardWidth/71; // 60 => -10
 let velocityY = initialVelocityX;
-let gravity = boardWidth/1500; // 1500 => 0.4
+let initialGravity = boardWidth/1500; // 1500 => 0.4
+let gravity = initialGravity;
 
 // skoker init
 let skokerWidth = boardWidth/13; // 13 => 46,1538...
@@ -46,7 +49,7 @@ for (let i = 1; i <= 6; i++) {
   arrPlatformImages.push(`./images/clouds/cloud-left-${i}.png`);
 };
 let platformColorsImages = [];
-let platformColors = ['black', 'blue', 'green',
+let platformColors = ['blue', 'green',
                       'grey', 'red', 'yellow'];
 for (let platformColor of platformColors) {
   platformColorsImages.push(
@@ -173,12 +176,11 @@ function update() {
 }
 
 function moveSkoker(event) {
-  let shiftSkokerX = boardWidth/120;
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
-    velocityX = shiftSkokerX;
+    velocityX = inialShiftSkokerX;
     skoker.image = skokerRightImage;
   } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
-    velocityX = -shiftSkokerX;
+    velocityX = -inialShiftSkokerX;
     skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyR') {
     if (gameOverFlag) init();
@@ -189,7 +191,7 @@ function moveSkoker(event) {
       score -= pointsForJump;
       pointsForJumpMessage = `-${pointsForJump}`;
     } else {
-      pointsForJumpMessage = 'no points';
+      pointsForJumpMessage = `need ${pointsForJump} \n points`;
     }
   }
 };
@@ -202,6 +204,7 @@ function placePlatforms() {
 
   // 1-st (starting) platform
   let platform = {
+    collision: true,
     color: 'white',
     image: platformImage,
     x: boardWidth/2 - platformWidth/2,
@@ -225,6 +228,7 @@ function newPlatform() {
   let platformImage = new Image();
   
   let platform = {
+    collision: true,
     color: 'white',
     image: platformImage,
     x: randomX,
@@ -234,66 +238,76 @@ function newPlatform() {
     height: platformHeight
   };
 
-  // clouds' default & colored images
+  // clouds' white & colored images
   if (randomInteger(1, 100) >= 85) {
     platform.image.src = platformColorsImages[
       randomInteger(0, platformColorsImages.length - 1)];
     platform.color = platform.image.src.split('-').pop().split('.')[0];
-    console.log(platform.color);
+    // console.log(platform.color);
   } else {
+    // color: 'white'
     platformImage.src = arrPlatformImages[
       randomInteger(0, arrPlatformImages.length - 1)];
   }
 
   // check certain color
   platform.image.src =
-    'images/clouds/colored/cloud-left-1-red.png';
+    'images/clouds/colored/cloud-left-1-grey.png';
   platform.color = platform.image.src.split('-').pop().split('.')[0];
+
+  // check certain color through white
+  // if (platform.color !== 'white') {
+  //   platform.color = 'red';
+  // }
+
 
   arrPlatform.push(platform);
 };
 
 function detectColor(skoker, platform) {
   velocityY = initialVelocityY;
+  let side = '';
+  if (randomInteger(0, 1) === 0 ) {
+    side = 'right'
+  } else side = 'left';
+
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 1.8;
   } else if (platform.color === 'blue') {
     
+  } else if (platform.color === 'grey') {
+    platform.color = 'black';
+    platform.image.src = 
+      `./images/clouds/colored/cloud-${side}-1-black.png`;
+
   } else if (platform.color === 'black') {
-    
+    platform.image.src = './images/clouds/transparent_1x1.png';
+    platform.collision = false;
+
   } else if (platform.color === 'red') {
-    let xDistanceSkokerPlatform =
-      (skoker.x + skoker.width/2) - (platform.x + platform.width/2);
-      console.log(skoker.x, platform.x);
-    // console.log(xDistanceSkokerPlatform);
-    // console.log(skoker.x + skoker.width/2, platform.x + platform.width/2);
+    let xDistanceSkokerPlatform = (skoker.x + skoker.width/2)
+      - (platform.x + platform.width/2);
+    // чем дальше скокер от центра облачка,
+    // тем слебее его запуливает по X от облачка
+    let coeffShiftSkokerX = xDistanceSkokerPlatform/(platform.width/2);
+    coeffShiftSkokerX *= 0.3; 
+
+    if (coeffShiftSkokerX >= 0) {
+      coeffShiftSkokerX += 1;
+    } else if (coeffShiftSkokerX < 0) {
+      coeffShiftSkokerX -= 1;
+    }
+    // console.log(coeffShiftSkokerX);
+    velocityX = inialShiftSkokerX * coeffShiftSkokerX;
+    // console.log(velocityX);
     // console.log('');
 
-    // let skokerCenter = {
-    //   x: skoker.x + skoker.width/2,
-    //   y: skoker.y + skoker.height/2
-    // };
-    // let platformCenter = {
-    //   x: platform.x + platform.width/2,
-    //   y: platform.y + platform.height/2
-    // };
-    // let vectorPlatformSkoker = [
-    //   skokerCenter.x - platformCenter.x,
-    //   skokerCenter.y - platformCenter.y
-    // ];
-
-    // let ordinateX = {
-    //   x0: platform.x + platform.width/2,
-    //   y0: platform.y + platform.height/2,
-    //   x1: skoker.x + skoker.width/2,
-    // };
-    // ordinateX.y1 = ordinateX.y0;
-    // console.log(ordinateX.y0, ordinateX.y1);
+    platform.image.src = './images/clouds/transparent_1x1.png';
+    platform.collision = false;
+    
   } else if (platform.color === 'green') {
     
-  } else if (platform.color === 'grey') {
-    
-  }
+  } 
 }
 
 function gameOver() {
