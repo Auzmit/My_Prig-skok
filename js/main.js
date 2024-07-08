@@ -15,8 +15,8 @@ let gameOverFlag = false;
 // physics init
 let initialVelocityX = 0;
 let velocityX = initialVelocityX;
-let inialShiftSkokerX = boardWidth/120;
-let shiftSkokerX = inialShiftSkokerX;
+// let inialShiftSkokerX = boardWidth/120;
+let shiftSkokerX = boardWidth/120;
 let initialVelocityY = -boardWidth/71; // 60 => -10
 let velocityY = initialVelocityX;
 let initialGravity = boardWidth/1500; // 1500 => 0.4
@@ -78,9 +78,9 @@ function init() {
 
   // load images
   skokerRightImage = new Image();
-  skokerRightImage.src = './images/head-right.png';
+  skokerRightImage.src = './images/head-right-stroke.png';
   skokerLeftImage = new Image();
-  skokerLeftImage.src = './images/head-left.png';
+  skokerLeftImage.src = './images/head-left-stroke.png';
   //
   skoker.image = skokerRightImage;
   skoker.x = skokerX;
@@ -177,10 +177,10 @@ function update() {
 
 function moveSkoker(event) {
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
-    velocityX = inialShiftSkokerX;
+    velocityX = shiftSkokerX;
     skoker.image = skokerRightImage;
   } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
-    velocityX = -inialShiftSkokerX;
+    velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyR') {
     if (gameOverFlag) init();
@@ -298,13 +298,13 @@ function detectColor(skoker, platform) {
       coeffShiftSkokerX -= 1;
     }
     // console.log(coeffShiftSkokerX);
-    velocityX = inialShiftSkokerX * coeffShiftSkokerX;
+    velocityX = shiftSkokerX * coeffShiftSkokerX;
     // console.log(velocityX);
     // console.log('');
 
     platform.image.src = './images/clouds/transparent_1x1.png';
     platform.collision = false;
-    
+
   } else if (platform.color === 'green') {
     
   } 
@@ -319,8 +319,15 @@ function gameOver() {
   gradient.addColorStop("0.5","blue");
   gradient.addColorStop("1.0","red");
 
+  let gameOverSize = boardWidth/6.5;
   context.fillStyle = gradient;
-  context.font = `bold ${boardWidth/8}px Sans-Serif`;
+  context.font = `bold ${gameOverSize}px Sans-Serif`;
   context.textAlign = 'center';
   context.fillText('Game Over', boardWidth/2, boardWidth/2);
+
+  context.fillStyle = 'black';
+  context.font = `bold ${boardWidth/15}px Sans-Serif`;
+  context.textAlign = 'center';
+  context.fillText('(press R to restart)', boardWidth/2,
+    boardWidth/2 + gameOverSize*0.98);
 }
