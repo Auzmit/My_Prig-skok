@@ -265,9 +265,9 @@ function detectColor(skoker, platform) {
     let xDistanceSkokerPlatform =
       (skoker.x + skoker.width/2) - (platform.x + platform.width/2);
       console.log(skoker.x, platform.x);
-    console.log(xDistanceSkokerPlatform);
-    console.log(skoker.x + skoker.width/2, platform.x + platform.width/2);
-    console.log('');
+    // console.log(xDistanceSkokerPlatform);
+    // console.log(skoker.x + skoker.width/2, platform.x + platform.width/2);
+    // console.log('');
 
     // let skokerCenter = {
     //   x: skoker.x + skoker.width/2,
