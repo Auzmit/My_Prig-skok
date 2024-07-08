@@ -250,12 +250,12 @@ function newPlatform() {
       randomInteger(0, arrPlatformImages.length - 1)];
   }
 
-  // check certain color
-  // platform.image.src =
-  //   'images/clouds/colored/cloud-left-1-grey.png';
-  // platform.color = platform.image.src.split('-').pop().split('.')[0];
+  // dev-check certain color
+  platform.image.src =
+    './images/clouds/colored/cloud-left-1-blue.png';
+  platform.color = platform.image.src.split('-').pop().split('.')[0];
 
-  // check certain color through white
+  // dev-check certain color between white
   // if (platform.color !== 'white') {
   //   platform.color = 'red';
   // }
@@ -267,14 +267,74 @@ function newPlatform() {
 function detectColor(skoker, platform) {
   velocityY = initialVelocityY;
   let side = '';
-  if (randomInteger(0, 1) === 0 ) {
+  if (randomInteger(0, 1) === 0) {
     side = 'right'
   } else side = 'left';
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
   } else if (platform.color === 'blue') {
-    
+    for (let i = 0; i < arrPlatform.length; i++) {
+      console.log(arrPlatform[i].x);
+    }
+
+    // console.log(platform.x);
+    // console.log(boardWidth/2);
+    // console.log(platform.width);
+    for (let i = 0; i < arrPlatform.length; i++) {
+      let platformCenter = arrPlatform[i].x + platformWidth/2;
+      // let coeffMirrorX = platformCenter - boardWidth/2;
+      // platformCenter = -platformCenter;
+      if (platformCenter >= boardWidth/2) {
+        platformCenter = boardWidth/2 - (platformCenter - boardWidth/2);
+        // arrPlatform[i].x = platformCenter - platformWidth/2;
+        // coeffMirrorX = platformCenter - boardWidth/2;
+        // coeffMirrorX = coeffMirrorX*2
+      } else {
+        platformCenter = boardWidth/2 + (boardWidth/2 - platformCenter);
+        // coeffMirrorX = (-coeffMirrorX)*2 - platform.width;
+        // coeffMirrorX = (coeffMirrorX + platformWidth) * 2;
+      }
+      arrPlatform[i].x = platformCenter - platformWidth/2;
+
+      // let coeffMirrorX = arrPlatform[i].x - boardWidth/2;
+      // if (coeffMirrorX >= 0) {
+      //   coeffMirrorX = - (coeffMirrorX*2 + platform.width);
+      // } else {
+      //   // coeffMirrorX = (-coeffMirrorX)*2 - platform.width;
+      //   if (Math.abs(coeffMirrorX) < platform.width) {
+      //     coeffMirrorX = -(platform.width - 2*Math.abs(coeffMirrorX));
+      //   } else {
+      //     coeffMirrorX = -coeffMirrorX*2 + platform.width;
+      //   }
+      //   coeffMirrorX = (coeffMirrorX + platform.width) * 2;
+      // }
+      
+      // let coeffMirrorX;
+      // if (arrPlatform[i].x >= boardWidth/2) {
+      //   coeffMirrorX = arrPlatform[i].x - boardWidth/2;
+      //   coeffMirrorX = -(coeffMirrorX*2 + platform.width);
+      // } else {
+        //   coeffMirrorX = arrPlatform[i].x + platform.width;
+        //   coeffMirrorX = boardWidth/2 - coeffMirrorX;
+      //   coeffMirrorX = arrPlatform[i].x + coeffMirrorX*2;
+      // }
+
+      // let coeffMirrorX;
+      // if (arrPlatform[i].x >= boardWidth/2) {
+        //   coeffMirrorX = boardWidth - arrPlatform[i].x + platformWidth; 
+        // } else {
+          
+        // }
+
+      // arrPlatform[i].x += coeffMirrorX;
+    }
+    console.log('');
+    for (let i = 0; i < arrPlatform.length; i++) {
+      console.log(arrPlatform[i].x);
+    }
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+
   } else if (platform.color === 'grey') {
     platform.color = 'black';
     platform.image.src = 
@@ -288,19 +348,18 @@ function detectColor(skoker, platform) {
     let xDistanceSkokerPlatform = (skoker.x + skoker.width/2)
       - (platform.x + platform.width/2);
     // чем дальше скокер от центра облачка,
-    // тем слебее его запуливает по X от облачка
+    // тем слабее его запуливает по X от облачка
     let coeffShiftSkokerX = xDistanceSkokerPlatform/(platform.width/2);
     coeffShiftSkokerX *= 0.3; 
 
-    if (coeffShiftSkokerX >= 0) {
-      coeffShiftSkokerX += 1;
-    } else if (coeffShiftSkokerX < 0) {
-      coeffShiftSkokerX -= 1;
-    }
-    // console.log(coeffShiftSkokerX);
+    // if (coeffShiftSkokerX >= 0) {
+    //   coeffShiftSkokerX += 1;
+    // } else if (coeffShiftSkokerX < 0) {
+    //   coeffShiftSkokerX -= 1;
+    // }
+
+    coeffShiftSkokerX += (coeffShiftSkokerX >= 0) ? 1 : -1;
     velocityX = shiftSkokerX * coeffShiftSkokerX;
-    // console.log(velocityX);
-    // console.log('');
 
     platform.image.src = './images/clouds/transparent_1x1.png';
     platform.collision = false;
