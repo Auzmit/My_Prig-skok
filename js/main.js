@@ -250,16 +250,18 @@ function newPlatform() {
       randomInteger(0, arrPlatformImages.length - 1)];
   }
 
+  let devCheckColor = 'blue';
   // dev-check certain color
-  platform.image.src =
-    './images/clouds/colored/cloud-left-1-blue.png';
-  platform.color = platform.image.src.split('-').pop().split('.')[0];
+  // platform.image.src =
+  //   `./images/clouds/colored/cloud-left-1-${devCheckColor}.png`;
+  // platform.color = platform.image.src.split('-').pop().split('.')[0];
 
   // dev-check certain color between white
-  // if (platform.color !== 'white') {
-  //   platform.color = 'red';
-  // }
-
+  if (platform.color !== 'white') {
+    platform.image.src =
+      `./images/clouds/colored/cloud-left-1-${devCheckColor}.png`;
+    platform.color = devCheckColor;
+  }
 
   arrPlatform.push(platform);
 };
