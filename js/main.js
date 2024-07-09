@@ -4,6 +4,7 @@ import randomInteger from './randomInteger.js';
 // board init
 let board;
 let boardWidth = 600;
+let widthPadding = boardWidth*0.02;
 let boardHeight = 800;
 let context;
 // starting 'f_update' every lntervalledUpdateFreq ms
@@ -18,6 +19,7 @@ let velocityX = initialVelocityX;
 // let inialShiftSkokerX = boardWidth/120;
 let shiftSkokerX = boardWidth/120;
 let initialVelocityY = -boardWidth/71; // 60 => -10
+// let initialVelocityY = -boardWidth/50; // 60 => -10
 let velocityY = initialVelocityX;
 let initialGravity = boardWidth/1500; // 1500 => 0.4
 let gravity = initialGravity;
@@ -40,8 +42,10 @@ let skoker = {
 // platforms init
 // const platformImageWidth = 1200;
 // const platformImageHeight = 336;
-const platformWidth = boardWidth/5;
-const platformHeight = platformWidth/3.57;
+let platformWidth = boardWidth/5;
+let platformHeight = platformWidth/3.57;
+let shiftPlatformX = shiftSkokerX;
+// let shiftPlatformX;
 let arrPlatform = [];
 let arrPlatformImages = [];
 for (let i = 1; i <= 6; i++) {
@@ -121,20 +125,28 @@ function update() {
     // shift skoker & all platforms little down:
     velocityY += gravity;
     if (velocityY < 0) {
-      // shift 2 times platforms,
+      // hard-defined scroll - shift 2 times only platforms,
       // because skoker can jump out from top of screen
       if (skoker.y < boardHeight * 0.4) {
         for (const platform of arrPlatform) {
           platform.y -= velocityY * 2;
         }
-      // normal shift - platforms & skoker
+      // normal scroll - shift on Y platforms & skoker
       } else if (skoker.y < boardHeight) {
         skoker.y += velocityY;
         for (const platform of arrPlatform) {
           platform.y -= velocityY;
         }
       }
+    // shift on Y only skoker
     } else skoker.y += velocityY;
+
+    // shift on X green platforms
+    for (const platform of arrPlatform) {
+      if (platform.color === 'green') {
+        shiftXGreen(platform);
+      }
+    }
   
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
@@ -172,7 +184,6 @@ function update() {
       pointsForJumpDrawIndex -= 1;
     }
   };
-  
 }
 
 function moveSkoker(event) {
@@ -199,29 +210,30 @@ function moveSkoker(event) {
 function placePlatforms() {
   arrPlatform = [];
   let platformImage = new Image();
-  platformImage.src = arrPlatformImages[
-    randomInteger(0, arrPlatformImages.length - 1)];
+  platformImage.src = './images/clouds/transparent_1x1.png';
+  // platformImage.src = arrPlatformImages[
+  //   randomInteger(0, arrPlatformImages.length - 1)];
 
   // 1-st (starting) platform
   let platform = {
-    collision: true,
-    color: 'white',
+    collision: false,
+    color: 'transparent',
     image: platformImage,
     x: boardWidth/2 - platformWidth/2,
     y: boardHeight - platformHeight,
+    // y: boardHeight,
     width: platformWidth,
     height: platformHeight
   };
   arrPlatform.push(platform);
 
-  while (arrPlatform[arrPlatform.length - 1].y > 0) {
+  while (arrPlatform[arrPlatform.length - 1].y >= 0) {
     newPlatform();
   };
 };
 
 function newPlatform() {
   // X-coord randoming with little indent on left & right
-  let widthPadding = boardWidth*0.02;
   let randomX = randomInteger(widthPadding,
     boardWidth - widthPadding - platformWidth);
 
@@ -238,30 +250,47 @@ function newPlatform() {
     height: platformHeight
   };
 
-  // platforms' white & colored images
+  // add colored platforms & images to them
   if (randomInteger(1, 100) >= 85) {
     platform.image.src = platformColorsImages[
       randomInteger(0, platformColorsImages.length - 1)];
     platform.color = platform.image.src.split('-').pop().split('.')[0];
-    // console.log(platform.color);
+    // add movement to green platforms
+    if (platform.color === 'green') {
+      platform.movingSpeedOnX = shiftPlatformX*randomInteger(100, 110)/100;
+      platform.movingOnX = '';
+      if (randomInteger(0, 1) === 0) {
+        platform.movingOnX = '-';
+      } else platform.movingOnX = '+';
+    };
   } else {
-    // color: 'white'
+    // add images to other - white - platforms
     platformImage.src = arrPlatformImages[
       randomInteger(0, arrPlatformImages.length - 1)];
-  }
-
-  let devCheckColor = 'blue';
-  // dev-check certain color
-  // platform.image.src =
-  //   `./images/clouds/colored/cloud-left-1-${devCheckColor}.png`;
-  // platform.color = platform.image.src.split('-').pop().split('.')[0];
-
-  // dev-check certain color between white
-  if (platform.color !== 'white') {
+  };
+  
+  function devCheckColors(checkingColor) {
+      // dev-check certain color
     platform.image.src =
-      `./images/clouds/colored/cloud-left-1-${devCheckColor}.png`;
-    platform.color = devCheckColor;
-  }
+      `./images/clouds/colored/cloud-left-1-${checkingColor}.png`;
+    platform.color = platform.image.src.split('-').pop().split('.')[0];
+  
+      // dev-check certain color between white
+    // if (platform.color !== 'white') {
+    //   platform.image.src =
+    //     `./images/clouds/colored/cloud-left-1-${checkingColor}.png`;
+    //   platform.color = checkingColor;
+    // }
+    if (platform.color === 'green') {
+      platform.movingSpeedOnX = shiftPlatformX*randomInteger(100, 110)/100;
+      platform.movingOnX = '';
+      if (randomInteger(0, 1) === 0) {
+        platform.movingOnX = '-';
+      } else platform.movingOnX = '+';
+    };
+  };
+  // colors: blue, green, grey, red, yellow, black
+  devCheckColors('grey');
 
   arrPlatform.push(platform);
 };
@@ -275,6 +304,7 @@ function detectColor(skoker, platform) {
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
+
   } else if (platform.color === 'blue') {
     // mirroring skoker & platforms
     velocityX = -velocityX;
@@ -291,15 +321,19 @@ function detectColor(skoker, platform) {
       }
       currentPlatform.x = platformCenter - platformWidth/2;
     }
+
   } else if (platform.color === 'grey') {
     // grey turns to black
     platform.color = 'black';
     platform.image.src = 
       `./images/clouds/colored/cloud-${side}-1-black.png`;
+
   } else if (platform.color === 'black') {
     // black disappear
-    platform.image.src = './images/clouds/transparent_1x1.png';
     platform.collision = false;
+    platform.color = 'transparent';
+    platform.image.src = './images/clouds/transparent_1x1.png';
+
   } else if (platform.color === 'red') {
     // explodes - farther skoker is from the center of the platform,
     // harder kicks him away along X & disappear
@@ -315,8 +349,27 @@ function detectColor(skoker, platform) {
     platform.collision = false;
 
   } else if (platform.color === 'green') {
-    
-  } 
+
+  }
+}
+
+function shiftXGreen(platform) {
+  if (platform.movingOnX === '+') {
+    if (platform.x + platform.width + shiftPlatformX <=
+      boardWidth - widthPadding) {
+        platform.x += platform.movingSpeedOnX;
+    } else {
+      platform.movingOnX = '-';
+      shiftXGreen(platform);
+    }
+  } else if (platform.movingOnX === '-') {
+    if (platform.x + shiftPlatformX >= widthPadding) {
+      platform.x -= platform.movingSpeedOnX;
+    } else {
+      platform.movingOnX = '+';
+      shiftXGreen(platform);
+    }
+  }
 }
 
 function gameOver() {
