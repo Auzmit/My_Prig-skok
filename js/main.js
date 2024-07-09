@@ -7,9 +7,9 @@ let boardWidth = 600;
 let widthPadding = boardWidth*0.02;
 let boardHeight = 800;
 let context;
-// starting 'f_update' every lntervalledUpdateFreq ms
+// starting 'f_updateGame' every lntervalledUpdateFreq ms
 // with the help of 'setInterval':
-let lntervalledUpdate;
+let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
 
@@ -69,9 +69,9 @@ let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 10;
 
-window.onload = init();
+window.onload = initGame();
 
-function init() {
+function initGame() {
   score = 0;
   gameOverFlag = false;
 
@@ -79,6 +79,7 @@ function init() {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext('2d');
+  context.clearRect(0, 0, board.width, board.height);
 
   // load images
   skokerRightImage = new Image();
@@ -98,22 +99,22 @@ function init() {
   velocityY = initialVelocityY;
   placePlatforms(arrPlatformImages);
 
-  // 3-rd variation of looped 'update':
-  clearInterval(lntervalledUpdate);
-  lntervalledUpdate = setInterval(update, lntervalledUpdateFreq);
+  // 3-rd variation of looped 'updateGame':
+  clearInterval(lntervalledUpdateGame);
+  lntervalledUpdateGame = setInterval(updateGame, lntervalledUpdateFreq);
   
-  document.addEventListener('keydown', moveSkoker);
+  document.addEventListener('keydown', skokerControls);
 };
 
-function update() {
-  // console.log('update');
+function updateGame() {
+  // console.log('updateGame');
   if (skoker.y > boardHeight) {
     gameOver();
-    clearInterval(lntervalledUpdate);
+    clearInterval(lntervalledUpdateGame);
   } else {
     context.clearRect(0, 0, board.width, board.height);
     
-    // update skoker.x
+    // updateGame skoker.x
     skoker.x += velocityX;
     // jump from side to side of the screen
     if (skoker.x > board.width) {
@@ -186,7 +187,7 @@ function update() {
   };
 }
 
-function moveSkoker(event) {
+function skokerControls(event) {
   if (event.code == 'ArrowRight' || event.code == 'KeyD') {
     velocityX = shiftSkokerX;
     skoker.image = skokerRightImage;
@@ -194,7 +195,7 @@ function moveSkoker(event) {
     velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
   } else if (event.code == 'KeyR') {
-    if (gameOverFlag) init();
+    if (gameOverFlag) initGame();
   } else if (event.code == 'Space') {
     pointsForJumpDrawIndex = initialPointsForJumpDrawIndex;
     if (score >= pointsForJump) {
