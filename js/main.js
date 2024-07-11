@@ -1,11 +1,12 @@
+import canvasMouseCoords from './canvasMouseCoords.js';
 import detectCollision from './detectCollision.js';
 import randomInteger from './randomInteger.js';
 
-// board init
-let board;
-let boardWidth = 600;
-let widthPadding = boardWidth*0.02;
-let boardHeight = 800;
+// canvas init
+let canvas;
+let canvasWidth = 600;
+let widthPadding = canvasWidth*0.02;
+let canvasHeight = 800;
 let context;
 // starting 'f_updateGame' every lntervalledUpdateFreq ms
 // with the help of 'setInterval':
@@ -16,19 +17,19 @@ let gameOverFlag = false;
 // physics init
 let initialVelocityX = 0;
 let velocityX = initialVelocityX;
-// let inialShiftSkokerX = boardWidth/120;
-let shiftSkokerX = boardWidth/120;
-let initialVelocityY = -boardWidth/71; // 60 => -10
-// let initialVelocityY = -boardWidth/50; // 60 => -10
+// let inialShiftSkokerX = canvasWidth/120;
+let shiftSkokerX = canvasWidth/120;
+let initialVelocityY = -canvasWidth/71; // 60 => -10
+// let initialVelocityY = -canvasWidth/50; // 60 => -10
 let velocityY = initialVelocityX;
-let initialGravity = boardWidth/1500; // 1500 => 0.4
+let initialGravity = canvasWidth/1500; // 1500 => 0.4
 let gravity = initialGravity;
 
 // skoker init
-let skokerWidth = boardWidth/13; // 13 => 46,1538...
+let skokerWidth = canvasWidth/13; // 13 => 46,1538...
 let skokerHeight = skokerWidth;
-let skokerX = boardWidth/2 - skokerWidth/2;
-let skokerY = boardHeight*0.9 - skokerHeight;
+let skokerX = canvasWidth/2 - skokerWidth/2;
+let skokerY = canvasHeight*0.9 - skokerHeight;
 let skokerLeftImage;
 let skokerRightImage;
 let skoker = {
@@ -42,7 +43,7 @@ let skoker = {
 // platforms init
 // const platformImageWidth = 1200;
 // const platformImageHeight = 336;
-let platformWidth = boardWidth/5;
+let platformWidth = canvasWidth/5;
 let platformHeight = platformWidth/3.57;
 let shiftPlatformX = shiftSkokerX;
 // let shiftPlatformX;
@@ -69,17 +70,60 @@ let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 10;
 
-window.onload = initGame();
+// window.onload = initGame();
+window.onload = initMenu();
+
+function initMenu() {
+  canvas = document.getElementById('canvas');
+  canvas.height = canvasHeight;
+  canvas.width = canvasWidth;
+  context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  let menuRectWidth = canvasWidth*3/6;
+  let menuRectHeight = menuRectWidth*2/8;
+  let menuRectPosX = canvasWidth/2 - menuRectWidth/2;
+  let menuRectPosY = canvasHeight*2/8;
+  let menuRectRadii = menuRectWidth/25;
+
+  // button Play
+  context.strokeStyle = "magenta";
+  context.beginPath();
+  context.roundRect(menuRectPosX, menuRectPosY,
+    menuRectWidth, menuRectHeight, menuRectRadii);
+  context.stroke();
+
+  canvas.addEventListener('click', (event) => {
+    let coords = canvasMouseCoords(canvas, event);
+    // console.log(coords);
+    // console.log(menuRectPosX, );
+    let mouseX = coords.x;
+    let mouseY = coords.y;
+    if ((mouseX > menuRectPosX) && (mouseX < menuRectPosX + menuRectWidth) &&
+        (mouseY > menuRectPosY) && (mouseY < menuRectPosY + menuRectHeight)) {
+      context.fill(240, 20, 140);
+      // console.log('play click');
+    }
+    // else {
+    //   context.fill(128, 10, 50);
+    // };
+  });
+
+  // canvas.addEventListener('click', (event) => {
+  //   let coords = canvasMouseCoords(canvas, event);
+  //   console.log(coords.x);
+  // });
+};
 
 function initGame() {
   score = 0;
   gameOverFlag = false;
 
-  board = document.getElementById('board');
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext('2d');
-  context.clearRect(0, 0, board.width, board.height);
+  canvas = document.getElementById('canvas');
+  canvas.height = canvasHeight;
+  canvas.width = canvasWidth;
+  context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
 
   // load images
   skokerRightImage = new Image();
@@ -108,19 +152,19 @@ function initGame() {
 
 function updateGame() {
   // console.log('updateGame');
-  if (skoker.y > boardHeight) {
+  if (skoker.y > canvasHeight) {
     gameOver();
     clearInterval(lntervalledUpdateGame);
   } else {
-    context.clearRect(0, 0, board.width, board.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     
     // updateGame skoker.x
     skoker.x += velocityX;
     // jump from side to side of the screen
-    if (skoker.x > board.width) {
+    if (skoker.x > canvas.width) {
       skoker.x = 0;
     } else if (skoker.x + skoker.width < 0) {
-      skoker.x = board.width;
+      skoker.x = canvas.width;
     };
   
     // shift skoker & all platforms little down:
@@ -128,12 +172,12 @@ function updateGame() {
     if (velocityY < 0) {
       // hard-defined scroll - shift 2 times only platforms,
       // because skoker can jump out from top of screen
-      if (skoker.y < boardHeight * 0.4) {
+      if (skoker.y < canvasHeight * 0.4) {
         for (const platform of arrPlatform) {
           platform.y -= velocityY * 2;
         }
       // normal scroll - shift on Y platforms & skoker
-      } else if (skoker.y < boardHeight) {
+      } else if (skoker.y < canvasHeight) {
         skoker.y += velocityY;
         for (const platform of arrPlatform) {
           platform.y -= velocityY;
@@ -158,7 +202,7 @@ function updateGame() {
         platform.y, platform.width, platform.height);
     };
     
-    while (arrPlatform[0].y >= boardHeight) {
+    while (arrPlatform[0].y >= canvasHeight) {
       arrPlatform.shift();
       newPlatform();
       score += 1;
@@ -166,9 +210,9 @@ function updateGame() {
   
     // score draw
     context.fillStyle = 'black';
-    context.font = `bold ${boardWidth/12}px Sans-Serif`;
+    context.font = `bold ${canvasWidth/12}px Sans-Serif`;
     context.textAlign = 'left';
-    context.fillText(score, boardWidth/120, boardWidth/15);
+    context.fillText(score, canvasWidth/120, canvasWidth/15);
 
     // skoker draw
     context.drawImage(skoker.image, skoker.x,
@@ -177,7 +221,7 @@ function updateGame() {
     // pointsForJump draw
     if (pointsForJumpDrawIndex > 0) {
       context.fillStyle = 'blue';
-      context.font = `bold ${boardWidth/12}px Sans-Serif`;
+      context.font = `bold ${canvasWidth/12}px Sans-Serif`;
       context.textAlign = 'center';
       context.fillText(pointsForJumpMessage, skoker.x + skoker.width/2,
         skoker.y + skoker.height*2);  
@@ -220,9 +264,9 @@ function placePlatforms() {
     collision: false,
     color: 'transparent',
     image: platformImage,
-    x: boardWidth/2 - platformWidth/2,
-    y: boardHeight - platformHeight,
-    // y: boardHeight,
+    x: canvasWidth/2 - platformWidth/2,
+    y: canvasHeight - platformHeight,
+    // y: canvasHeight,
     width: platformWidth,
     height: platformHeight
   };
@@ -236,7 +280,7 @@ function placePlatforms() {
 function newPlatform() {
   // X-coord randoming with little indent on left & right
   let randomX = randomInteger(widthPadding,
-    boardWidth - widthPadding - platformWidth);
+    canvasWidth - widthPadding - platformWidth);
 
   let platformImage = new Image();
   
@@ -245,8 +289,8 @@ function newPlatform() {
     color: 'white',
     image: platformImage,
     x: randomX,
-    y: arrPlatform[arrPlatform.length - 1].y - boardWidth/6
-      - randomInteger(0, boardWidth/10.5),
+    y: arrPlatform[arrPlatform.length - 1].y - canvasWidth/6
+      - randomInteger(0, canvasWidth/10.5),
     width: platformWidth,
     height: platformHeight
   };
@@ -315,10 +359,10 @@ function detectColor(skoker, platform) {
 
     for (let currentPlatform of arrPlatform) {
       let platformCenter = currentPlatform.x + platformWidth/2;
-      if (platformCenter >= boardWidth/2) {
-        platformCenter = boardWidth/2 - (platformCenter - boardWidth/2);
+      if (platformCenter >= canvasWidth/2) {
+        platformCenter = canvasWidth/2 - (platformCenter - canvasWidth/2);
       } else {
-        platformCenter = boardWidth/2 + (boardWidth/2 - platformCenter);
+        platformCenter = canvasWidth/2 + (canvasWidth/2 - platformCenter);
       }
       currentPlatform.x = platformCenter - platformWidth/2;
     }
@@ -357,7 +401,7 @@ function detectColor(skoker, platform) {
 function shiftXGreen(platform) {
   if (platform.movingOnX === '+') {
     if (platform.x + platform.width + shiftPlatformX <=
-      boardWidth - widthPadding) {
+      canvasWidth - widthPadding) {
         platform.x += platform.movingSpeedOnX;
     } else {
       platform.movingOnX = '-';
@@ -376,20 +420,20 @@ function shiftXGreen(platform) {
 function gameOver() {
   gameOverFlag = true;
 
-  let gradient = context.createLinearGradient(0, 0, boardWidth, 0);
+  let gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
   gradient.addColorStop("0","magenta");
   gradient.addColorStop("0.5","blue");
   gradient.addColorStop("1.0","red");
 
-  let gameOverSize = boardWidth/6.5;
+  let gameOverSize = canvasWidth/6.5;
   context.fillStyle = gradient;
   context.font = `bold ${gameOverSize}px Sans-Serif`;
   context.textAlign = 'center';
-  context.fillText('Game Over', boardWidth/2, boardWidth/2);
+  context.fillText('Game Over', canvasWidth/2, canvasWidth/2);
 
   context.fillStyle = 'black';
-  context.font = `bold ${boardWidth/15}px Sans-Serif`;
+  context.font = `bold ${canvasWidth/15}px Sans-Serif`;
   context.textAlign = 'center';
-  context.fillText('(press R to restart)', boardWidth/2,
-    boardWidth/2 + gameOverSize*0.98);
+  context.fillText('(press R to restart)', canvasWidth/2,
+    canvasWidth/2 + gameOverSize*0.98);
 }
