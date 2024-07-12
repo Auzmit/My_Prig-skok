@@ -13,13 +13,14 @@ let context;
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
+
+// fonts (web safe):
 let fontArial = 'Arial'; // same line thickness
 let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
 let fontCourierNew = 'Courier New'; // same line thickness, but slim
 let fontTimesNewRoman = 'Times New Roman'; // unsame line thickness
 let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
 let fontVerdana = 'Verdana'; // same line thickness & bold
-// let fontSansSerif = 'Sans-Serif';
 
 // physics init
 let initialVelocityX = 0;
@@ -161,7 +162,7 @@ function initWorldsMenu() {
       rectWidth, rectHeight, rectRadii);
     context.fill();
     context.stroke();
-    
+
     // text
     context.textAlign = 'center';
     context.textBaseline = 'top';

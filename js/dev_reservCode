@@ -1,0 +1,97 @@
+// https://stackoverflow.com/questions/55677/
+// how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
+// сложный и какой-та неработающий метод detect mouseClick
+// export default (event) => {
+//   var totalOffsetX = 0;
+//   var totalOffsetY = 0;
+//   var canvasX = 0;
+//   var canvasY = 0;
+//   var currentElement = this;
+//
+//   do {
+//     totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+//     totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+//   } while (currentElement = currentElement.offsetParent);
+//
+//   canvasX = event.pageX - totalOffsetX;
+//   canvasY = event.pageY - totalOffsetY;
+//
+//   return { x: canvasX, y: canvasY };
+// };
+//
+// HTMLCanvasElement.prototype.boardMouseCoords = boardMouseCoords;
+// // The last line makes things convenient for getting the mouse
+// // coordinates relative to a canvas element.
+// // All that's needed to get the useful coordinates is:
+//
+// coords = canvas.boardMouseCoords(event);
+// canvasX = coords.x;
+// canvasY = coords.y;
+
+
+// switch (event.code) {
+//   case 'ArrowRight':
+//   case 'KeyD':
+//     velocityX = shiftSkokerX;
+//     skoker.image = skokerRightImage;
+//     break;
+//   case 'ArrowLeft':
+//   case 'KeyA':
+//     velocityX = -shiftSkokerX;
+//     skoker.image = skokerLeftImage;
+//     break;
+//   case 'KeyR':
+//     if (gameOverFlag) init();
+//     break;
+//   default:
+//     break;
+// }
+
+
+// Остановка залупленного update():
+// else if (event.code == 'KeyQ') {
+//   clearInterval(lntervalledUpdate);
+// };
+
+
+// 1-st variation of looped 'update':
+// requestAnimationFrame(update);
+
+// 2-nd variation of looped 'update':
+// while (updateFlag) setInterval(update, 16);
+// if (!updateFlag) {
+//   updateFlag = true;
+// }
+
+
+// общий state
+// let state = {
+//   canvas: {
+//     board,
+//     boardWidth,
+//     boardHeight,
+//     context
+//   },
+//   physics: {
+//     velocityX,
+//     velocityY,
+//     initialVelocityY,
+//     gravity
+//   },
+//   character: {
+//     skokerWidth,
+//     skokerHeight,
+//     skokerX,
+//     skokerY,
+//     skokerLeftImage,
+//     skokerRightImage,
+//     skoker
+//   },
+//   platforms: {
+//     platformWidth,
+//     platformHeight,
+//     arrPlatform,
+//     arrPlatformImages
+//   },
+//   score
+// };

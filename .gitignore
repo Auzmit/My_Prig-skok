@@ -1,6 +1,10 @@
 my_*
 test*
+test_*
 tmp_*
 settings.json
 
 node_modules/
+
+# эти файлы спецом оставляю - просто кому-нить будет интересно
+# dev*
