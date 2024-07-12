@@ -13,6 +13,13 @@ let context;
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
+let fontArial = 'Arial'; // same line thickness
+let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
+let fontCourierNew = 'Courier New'; // same line thickness, but slim
+let fontTimesNewRoman = 'Times New Roman'; // unsame line thickness
+let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
+let fontVerdana = 'Verdana'; // same line thickness & bold
+// let fontSansSerif = 'Sans-Serif';
 
 // physics init
 let initialVelocityX = 0;
@@ -70,39 +77,51 @@ let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 10;
 
-// window.onload = initGame();
-window.onload = initMenu();
+window.onload = initGame();
+// window.onload = initMainMenu();
 
-function initMenu() {
+function initMainMenu() {
   canvas = document.getElementById('canvas');
   canvas.height = canvasHeight;
   canvas.width = canvasWidth;
   context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  let menuRectWidth = canvasWidth*3/6;
-  let menuRectHeight = menuRectWidth*2/8;
-  let menuRectPosX = canvasWidth/2 - menuRectWidth/2;
-  let menuRectPosY = canvasHeight*2/8;
-  let menuRectRadii = menuRectWidth/25;
+  let mainMenuRectWidth = canvasWidth*3/6;
+  let mainMenuRectHeight = mainMenuRectWidth*2/8;
+  let mainMenuRectPosX = canvasWidth/2 - mainMenuRectWidth/2;
+  let mainMenuRectPosY = canvasHeight*2/8;
+  let mainMenuRectRadii = mainMenuRectWidth/25;
 
-  // button Play
-  context.strokeStyle = "magenta";
+  // button Worlds
+  context.fillStyle = 'rgba(255, 200, 0, 0.4)';
+  context.strokeStyle = 'black';
   context.beginPath();
-  context.roundRect(menuRectPosX, menuRectPosY,
-    menuRectWidth, menuRectHeight, menuRectRadii);
+  context.roundRect(mainMenuRectPosX, mainMenuRectPosY,
+    mainMenuRectWidth, mainMenuRectHeight, mainMenuRectRadii);
+  context.fill();
   context.stroke();
+  // text
+  context.font = `bold ${canvasWidth/15}px ${fontTimesNewRoman}`;
+  context.textAlign = 'center'; 
+  context.textBaseline = 'middle';
+  context.fillStyle = '#000000';
+  context.fillText('Миры', mainMenuRectPosX + mainMenuRectWidth/2,
+    mainMenuRectPosY + mainMenuRectHeight/2);
 
   canvas.addEventListener('click', (event) => {
     let coords = canvasMouseCoords(canvas, event);
     // console.log(coords);
-    // console.log(menuRectPosX, );
+    // console.log(mainMenuRectPosX, );
     let mouseX = coords.x;
     let mouseY = coords.y;
-    if ((mouseX > menuRectPosX) && (mouseX < menuRectPosX + menuRectWidth) &&
-        (mouseY > menuRectPosY) && (mouseY < menuRectPosY + menuRectHeight)) {
-      context.fill(240, 20, 140);
-      // console.log('play click');
+    if ((mouseX > mainMenuRectPosX) &&
+        (mouseX < mainMenuRectPosX + mainMenuRectWidth) &&
+        (mouseY > mainMenuRectPosY) &&
+        (mouseY < mainMenuRectPosY + mainMenuRectHeight)) {
+      // context.fill(240, 20, 140);
+      console.log('play click');
+      initGame();
     }
     // else {
     //   context.fill(128, 10, 50);
@@ -210,9 +229,11 @@ function updateGame() {
   
     // score draw
     context.fillStyle = 'black';
-    context.font = `bold ${canvasWidth/12}px Sans-Serif`;
+    context.strokeStyle = 'white';
+    context.font = `bold ${canvasWidth/12}px ${fontVerdana}`;
     context.textAlign = 'left';
-    context.fillText(score, canvasWidth/120, canvasWidth/15);
+    context.fillText(score, canvasWidth/60, canvasWidth/13);
+    context.strokeText(score, canvasWidth/60, canvasWidth/13);
 
     // skoker draw
     context.drawImage(skoker.image, skoker.x,
@@ -221,7 +242,7 @@ function updateGame() {
     // pointsForJump draw
     if (pointsForJumpDrawIndex > 0) {
       context.fillStyle = 'blue';
-      context.font = `bold ${canvasWidth/12}px Sans-Serif`;
+      context.font = `bold ${canvasWidth/12}px ${fontTimesNewRoman}`;
       context.textAlign = 'center';
       context.fillText(pointsForJumpMessage, skoker.x + skoker.width/2,
         skoker.y + skoker.height*2);  
@@ -335,7 +356,7 @@ function newPlatform() {
     };
   };
   // colors: blue, green, grey, red, yellow, black
-  devCheckColors('grey');
+  devCheckColors('yellow');
 
   arrPlatform.push(platform);
 };
@@ -419,21 +440,35 @@ function shiftXGreen(platform) {
 
 function gameOver() {
   gameOverFlag = true;
-
+  
+  let gameOverSize = canvasWidth/10;
+  
+  // 'Игра окончена'
   let gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
-  gradient.addColorStop("0","magenta");
-  gradient.addColorStop("0.5","blue");
-  gradient.addColorStop("1.0","red");
-
-  let gameOverSize = canvasWidth/6.5;
+  gradient.addColorStop('0', 'FireBrick');
+  // gradient.addColorStop('0', 'blue');
+  gradient.addColorStop('0.5', 'red');
+  // gradient.addColorStop('1', 'DarkRed');
+  gradient.addColorStop('1', 'DarkRed');
   context.fillStyle = gradient;
-  context.font = `bold ${gameOverSize}px Sans-Serif`;
+  context.strokeStyle = 'black';
+  context.font = `bold ${gameOverSize}px ${fontTimesNewRoman}`;
   context.textAlign = 'center';
-  context.fillText('Game Over', canvasWidth/2, canvasWidth/2);
+  context.fillText('Игра окончена', canvasWidth/2, canvasWidth/2);
+  context.strokeText('Игра окончена', canvasWidth/2, canvasWidth/2);
 
+  // 'нажмите "R" для рестарта'
   context.fillStyle = 'black';
-  context.font = `bold ${canvasWidth/15}px Sans-Serif`;
+  context.strokeStyle = 'white';
+  // context.font = `bold ${gameOverSize/1.7}px ${fontArial}`;
+  // context.font = `bold ${gameOverSize/1.7}px ${fontCourierNew}`;
+  // context.font = `bold ${gameOverSize/1.7}px ${fontGeorgia}`;
+  // context.font = `bold ${gameOverSize/1.8}px ${fontTimesNewRoman}`;
+  context.font = `bold ${gameOverSize/1.7}px ${fontTrebuchetMS}`;
+  // context.font = `bold ${gameOverSize/1.7}px ${fontVerdana}`;
   context.textAlign = 'center';
-  context.fillText('(press R to restart)', canvasWidth/2,
-    canvasWidth/2 + gameOverSize*0.98);
+  context.fillText('нажмите «R» для рестарта', canvasWidth/2,
+    canvasWidth/2 + gameOverSize);
+  context.strokeText('нажмите «R» для рестарта', canvasWidth/2,
+    canvasWidth/2 + gameOverSize);
 }
