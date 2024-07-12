@@ -77,8 +77,9 @@ let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 10;
 
-window.onload = initGame();
 // window.onload = initMainMenu();
+window.onload = initWorldsMenu();
+// window.onload = initGame();
 
 function initMainMenu() {
   canvas = document.getElementById('canvas');
@@ -87,41 +88,42 @@ function initMainMenu() {
   context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  let mainMenuRectWidth = canvasWidth*3/6;
-  let mainMenuRectHeight = mainMenuRectWidth*2/8;
-  let mainMenuRectPosX = canvasWidth/2 - mainMenuRectWidth/2;
-  let mainMenuRectPosY = canvasHeight*2/8;
-  let mainMenuRectRadii = mainMenuRectWidth/25;
+  let rectWidth = canvasWidth*3/6;
+  let rectHeight = rectWidth*2/8;
+  let rectPosX = canvasWidth/2 - rectWidth/2;
+  let rectPosY = canvasHeight*2/8;
+  let rectRadii = rectWidth/25;
 
   // button Worlds
   context.fillStyle = 'rgba(255, 200, 0, 0.4)';
   context.strokeStyle = 'black';
   context.beginPath();
-  context.roundRect(mainMenuRectPosX, mainMenuRectPosY,
-    mainMenuRectWidth, mainMenuRectHeight, mainMenuRectRadii);
+  context.roundRect(rectPosX, rectPosY,
+    rectWidth, rectHeight, rectRadii);
   context.fill();
   context.stroke();
   // text
   context.font = `bold ${canvasWidth/15}px ${fontTimesNewRoman}`;
-  context.textAlign = 'center'; 
+  context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.fillStyle = '#000000';
-  context.fillText('Миры', mainMenuRectPosX + mainMenuRectWidth/2,
-    mainMenuRectPosY + mainMenuRectHeight/2);
+  context.fillText('Миры', rectPosX + rectWidth/2,
+    rectPosY + rectHeight/2);
 
   canvas.addEventListener('click', (event) => {
     let coords = canvasMouseCoords(canvas, event);
     // console.log(coords);
-    // console.log(mainMenuRectPosX, );
+    // console.log(rectPosX, );
     let mouseX = coords.x;
     let mouseY = coords.y;
-    if ((mouseX > mainMenuRectPosX) &&
-        (mouseX < mainMenuRectPosX + mainMenuRectWidth) &&
-        (mouseY > mainMenuRectPosY) &&
-        (mouseY < mainMenuRectPosY + mainMenuRectHeight)) {
+    if ((mouseX > rectPosX) &&
+        (mouseX < rectPosX + rectWidth) &&
+        (mouseY > rectPosY) &&
+        (mouseY < rectPosY + rectHeight)) {
       // context.fill(240, 20, 140);
       console.log('play click');
-      initGame();
+      initWorldsMenu();
+      // initGame();
     }
     // else {
     //   context.fill(128, 10, 50);
@@ -132,6 +134,67 @@ function initMainMenu() {
   //   let coords = canvasMouseCoords(canvas, event);
   //   console.log(coords.x);
   // });
+};
+
+function initWorldsMenu() {
+  canvas = document.getElementById('canvas');
+  canvas.height = canvasHeight;
+  canvas.width = canvasWidth;
+  context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  
+  let fontSizeWorldName = canvasWidth/20;
+
+  let rectWidth = canvasWidth*3/6;
+  let rectHeight = rectWidth*2/8;
+  let rectRadii = rectWidth/25;
+  let rectPosX = canvasWidth/2 - rectWidth/2;
+  let rectPosY = canvasHeight*1/16;
+
+  function buttonWorld(fillColor, worldName, des1, des2) {
+    // rectangle
+    rectPosY = rectPosY + rectHeight*1.3;
+    context.fillStyle = fillColor;
+    context.strokeStyle = 'black';
+    context.beginPath();
+    context.roundRect(rectPosX, rectPosY,
+      rectWidth, rectHeight, rectRadii);
+    context.fill();
+    context.stroke();
+    
+    // text
+    context.textAlign = 'center';
+    context.textBaseline = 'top';
+    context.font = `bold ${fontSizeWorldName}px ${fontTimesNewRoman}`;
+    context.fillStyle = '#000000';
+    context.fillText(worldName, rectPosX + rectWidth/2,
+      rectPosY + rectHeight/12);
+    context.font = `bold ${fontSizeWorldName/1.8}px ${fontTimesNewRoman}`;
+    context.fillText(des1, rectPosX + rectWidth/2,
+      rectPosY + rectHeight/20 + fontSizeWorldName*1.2);
+    context.fillText(des2, rectPosX + rectWidth/2,
+      rectPosY + rectHeight/20 + fontSizeWorldName*1.7);
+  };
+
+  // Детский
+  buttonWorld('rgba(255, 200, 0, 0.4)', 'Детский',
+    'всё просто - даже', 'ребёнок справится');
+
+  // Обычная жизнь
+  buttonWorld('rgba(255, 200, 0, 0.4)', 'Обычная жизнь',
+    'жизнь как она есть:', 'со своими взлётами и падениями');
+
+  // Нуар
+  buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуар',
+    'это сложный мир,', 'но дающий право на ошибку');
+  
+  // Green Lives Matter
+  buttonWorld('rgba(255, 200, 0, 0.4)', 'Green Lives Matter',
+    'движение это жизнь, да?', 'а природа - это и есть движение!');
+  
+  // Нуарный кошмар
+  buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуарный кошмар',
+    'на самом деле всё просто -', 'просто не ошибайся)');
 };
 
 function initGame() {
