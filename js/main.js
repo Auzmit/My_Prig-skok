@@ -126,15 +126,7 @@ function initMainMenu() {
       initWorldsMenu();
       // initGame();
     }
-    // else {
-    //   context.fill(128, 10, 50);
-    // };
   });
-
-  // canvas.addEventListener('click', (event) => {
-  //   let coords = canvasMouseCoords(canvas, event);
-  //   console.log(coords.x);
-  // });
 };
 
 function initWorldsMenu() {
@@ -152,6 +144,11 @@ function initWorldsMenu() {
   let rectPosX = canvasWidth/2 - rectWidth/2;
   let rectPosY = canvasHeight*1/16;
 
+  let arrWorldsColors = ['yellow', 'multiColours', 'grey',
+    'green', 'black'];
+  let arrWorldsRects = [];
+  let worldNumber = 0;
+
   function buttonWorld(fillColor, worldName, des1, des2) {
     // rectangle
     rectPosY = rectPosY + rectHeight*1.3;
@@ -162,6 +159,10 @@ function initWorldsMenu() {
       rectWidth, rectHeight, rectRadii);
     context.fill();
     context.stroke();
+
+    arrWorldsRects.push(
+      [`${arrWorldsColors[worldNumber]}WorldY`, rectPosY]);
+    worldNumber += 1;
 
     // text
     context.textAlign = 'center';
@@ -177,25 +178,42 @@ function initWorldsMenu() {
       rectPosY + rectHeight/20 + fontSizeWorldName*1.7);
   };
 
-  // Детский
+  // yellow - Детский
   buttonWorld('rgba(255, 200, 0, 0.4)', 'Детский',
     'всё просто - даже', 'ребёнок справится');
 
-  // Обычная жизнь
+  // multiColours - Обычная жизнь
   buttonWorld('rgba(255, 200, 0, 0.4)', 'Обычная жизнь',
     'жизнь как она есть:', 'со своими взлётами и падениями');
 
-  // Нуар
+  // grey - Нуар
   buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуар',
     'это сложный мир,', 'но дающий право на ошибку');
   
-  // Green Lives Matter
+  // green - Green Lives Matter
   buttonWorld('rgba(255, 200, 0, 0.4)', 'Green Lives Matter',
     'движение это жизнь, да?', 'а природа - это и есть движение!');
   
-  // Нуарный кошмар
+  // black - Нуарный кошмар
   buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуарный кошмар',
     'на самом деле всё просто -', 'просто не ошибайся)');
+
+  // action on click (& select in future updates...)
+  for (let worldY of arrWorldsRects) {
+    canvas.addEventListener('click', (event) => {
+      let currRectPosY = worldY[1];
+      let coords = canvasMouseCoords(canvas, event);
+      let mouseX = coords.x;
+      let mouseY = coords.y;
+        if ((mouseX > rectPosX) &&
+          (mouseX < rectPosX + rectWidth) &&
+          (mouseY > currRectPosY) &&
+          (mouseY < currRectPosY + rectHeight)) {
+        console.log(worldY[1]);
+        // initGame();
+      }
+    })
+  };
 };
 
 function initGame() {
