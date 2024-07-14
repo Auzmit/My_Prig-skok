@@ -13,6 +13,7 @@ let context;
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
+let choosedWorld = '';
 
 // fonts (web safe):
 let fontArial = 'Arial'; // same line thickness
@@ -26,7 +27,7 @@ let fontVerdana = 'Verdana'; // same line thickness & bold
 let initialVelocityX = 0;
 let velocityX = initialVelocityX;
 // let inialShiftSkokerX = canvasWidth/120;
-let shiftSkokerX = canvasWidth/120;
+let shiftSkokerX = canvasWidth/100;
 let initialVelocityY = -canvasWidth/71; // 60 => -10
 // let initialVelocityY = -canvasWidth/50; // 60 => -10
 let velocityY = initialVelocityX;
@@ -73,7 +74,7 @@ for (let platformColor of platformColors) {
 
 // score init
 let score = 0;
-let pointsForJump = 20;
+let pointsForJump = 10;
 let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 10;
@@ -146,7 +147,7 @@ function initWorldsMenu() {
 
   let arrWorldsColors = ['yellow', 'multiColours', 'grey',
     'green', 'black'];
-  let arrWorldsRects = [];
+  let arrWorldNameAndY = [];
   let worldNumber = 0;
 
   function buttonWorld(fillColor, worldName, des1, des2) {
@@ -160,8 +161,7 @@ function initWorldsMenu() {
     context.fill();
     context.stroke();
 
-    arrWorldsRects.push(
-      [`${arrWorldsColors[worldNumber]}WorldY`, rectPosY]);
+    arrWorldNameAndY.push([arrWorldsColors[worldNumber], rectPosY]);
     worldNumber += 1;
 
     // text
@@ -199,7 +199,7 @@ function initWorldsMenu() {
     'на самом деле всё просто -', 'просто не ошибайся)');
 
   // action on click (& select in future updates...)
-  for (let worldY of arrWorldsRects) {
+  for (let worldY of arrWorldNameAndY) {
     canvas.addEventListener('click', (event) => {
       let currRectPosY = worldY[1];
       let coords = canvasMouseCoords(canvas, event);
@@ -209,7 +209,11 @@ function initWorldsMenu() {
           (mouseX < rectPosX + rectWidth) &&
           (mouseY > currRectPosY) &&
           (mouseY < currRectPosY + rectHeight)) {
-        console.log(worldY[1]);
+        console.log(worldY[0]);
+        // choosedWorld = worldY[0].split('WorldY')[0];
+        choosedWorld = worldY[0];
+        // console.log(choosedWorld);
+        initGame()
         // initGame();
       }
     })
@@ -399,7 +403,7 @@ function newPlatform() {
   };
 
   // add colored platforms & images to them
-  if (randomInteger(1, 100) >= 85) {
+  if (randomInteger(1, 100) >= 65) {
     platform.image.src = platformColorsImages[
       randomInteger(0, platformColorsImages.length - 1)];
     platform.color = platform.image.src.split('-').pop().split('.')[0];
@@ -438,7 +442,10 @@ function newPlatform() {
     };
   };
   // colors: blue, green, grey, red, yellow, black
-  devCheckColors('yellow');
+  if (choosedWorld !== 'multiColours') {
+    // devCheckColors('yellow');
+    devCheckColors(choosedWorld);
+  }
 
   arrPlatform.push(platform);
 };
