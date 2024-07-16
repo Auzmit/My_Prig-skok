@@ -1,3 +1,10 @@
+// // mirroring skoker
+// velocityX = -velocityX;
+// if (skoker.image === skokerRightImage) {
+//   skoker.image = skokerLeftImage;
+// } else skoker.image = skokerRightImage;
+
+
 // https://stackoverflow.com/questions/55677/
 // how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
 // сложный и какой-та неработающий метод detect mouseClick

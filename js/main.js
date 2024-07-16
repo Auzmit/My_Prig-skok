@@ -3,14 +3,13 @@ import { detectCollision } from './detectCollision.js';
 import { randomInteger, randomLeftOrRight } from './random.js';
 import { addMovementToGreenPlatforms } from './addMovementToGreenPlatforms.js';
 
-
 // canvas init
 let canvas;
 let canvasWidth = 600;
 let widthPadding = canvasWidth*0.02;
 let canvasHeight = 800;
 let context;
-// starting 'f_updateGame' every lntervalledUpdateFreq ms
+// starting 'f_updateGame' every 'lntervalledUpdateFreq' ms
 // with the help of 'setInterval':
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
@@ -21,8 +20,6 @@ let currentWorldColor = '';
 let arrScreens = ['worldsMenu', 'gameWorld'];
 let currentScreen = arrScreens[0];
 // worlds screen
-// let arrWorldsColors = ['yellow', 'multiColours', 'grey',
-//   'green', 'black'];
 let objWorldsInfo = {
   'multiColours': {fillColor: 'rgba(255, 255, 255, 0.4)', name: 'Обычная жизнь',
     str1: 'жизнь как она есть:', str2: 'со своими взлётами и падениями'},
@@ -35,15 +32,14 @@ let objWorldsInfo = {
   'black': {fillColor: 'rgba(0, 0, 0, 0.4)', name: 'Нуарный кошмар',
     str1: 'на самом деле всё просто -', str2: 'просто не ошибайся)'}
 };
-// let worldNumber = 0;
 let rectWidth = canvasWidth*3/6;
 let rectHeight = rectWidth*2/8;
 let rectShiftY = rectHeight*1.3;
 let rectRadii = rectWidth/25;
 let rectPosX = canvasWidth/2 - rectWidth/2;
-// располагаю первую кнопку так, чтобы все кнопки находились по середине Y
-// (расстояние от верхней точки самой верхней кнопки до верха канваса
-// равно расстоянию от нижней точки самой нижней кнопки до низа канваса)
+// I position first button so that all buttons are in middle of Y
+// (distance from top point of topmost button to top canvas
+// is equal to distance from bottom point of lowest button to bottom of canvas)
 let rectPosY = (canvasHeight -
   rectHeight * Object.keys(objWorldsInfo).length -
   (rectShiftY - rectHeight) * (Object.keys(objWorldsInfo).length - 1)) / 2;
@@ -87,8 +83,8 @@ let skoker = {
 }
 
 // platforms init
-// const platformImageWidth = 1200;
-// const platformImageHeight = 336;
+// original image width = 1200
+// original image height = 336
 let platformWidth = canvasWidth/5;
 let platformHeight = platformWidth/3.57;
 let shiftPlatformX = shiftSkokerX;
@@ -118,6 +114,7 @@ let initialPointsForJumpDrawIndex = 10;
 // window.onload = initMainMenu();
 window.onload = initWorldsMenu();
 // window.onload = initGame();
+
 document.addEventListener('click', (event) => {
   if (currentScreen === 'worldsMenu') {
     let coords = canvasMouseCoords(canvas, event);
@@ -133,24 +130,20 @@ document.addEventListener('click', (event) => {
               initGame();
             };
         };
-
-
-      // canvas.addEventListener('click', (event) => {
-      //     if ((mouseX > rectPosX) &&
-      //       (mouseX < rectPosX + rectWidth) &&
-      //       (mouseY > currRectPosY) &&
-      //       (mouseY < currRectPosY + rectHeight)) {
-      //     console.log(worldY[0]);
-      //     // choosedWorld = worldY[0].split('WorldY')[0];
-      //     choosedWorld = worldY[0];
-      //     // console.log(choosedWorld);
-      //     initGame()
-      //     // initGame();
-      //   }
-      // })
-
-
     };
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (currentScreen === 'gameWorld') {
+    if (gameOverFlag) {
+      if (event.code === 'Escape') {
+        clearInterval(lntervalledUpdateGame);
+        initWorldsMenu();
+      } else if (event.code === 'KeyR') initGame();
+    } else {
+      skokerControls(event);
+    }
   }
 });
 
@@ -184,23 +177,6 @@ document.addEventListener('click', (event) => {
 //   context.fillStyle = '#000000';
 //   context.fillText('Миры', rectPosX + rectWidth/2,
 //     rectPosY + rectHeight/2);
-
-//   // canvas.addEventListener('click', (event) => {
-//   //   let coords = canvasMouseCoords(canvas, event);
-//   //   // console.log(coords);
-//   //   // console.log(rectPosX, );
-//   //   let mouseX = coords.x;
-//   //   let mouseY = coords.y;
-//   //   if ((mouseX > rectPosX) &&
-//   //       (mouseX < rectPosX + rectWidth) &&
-//   //       (mouseY > rectPosY) &&
-//   //       (mouseY < rectPosY + rectHeight)) {
-//   //     // context.fill(240, 20, 140);
-//   //     console.log('play click');
-//   //     initWorldsMenu();
-//   //     // initGame();
-//   //   }
-//   // });
 // };
 
 function initWorldsMenu() {
@@ -273,9 +249,6 @@ function initGame() {
   // 3-rd variation of looped 'updateGame':
   clearInterval(lntervalledUpdateGame);
   lntervalledUpdateGame = setInterval(updateGame, lntervalledUpdateFreq);
-  
-  document.addEventListener('keydown', skokerControls);
-  canvas.addEventListener('keydown', menuControls);
 };
 
 function updateGame() {
@@ -362,15 +335,13 @@ function updateGame() {
 }
 
 function skokerControls(event) {
-  if (event.code == 'ArrowRight' || event.code == 'KeyD') {
+  if (event.code === 'ArrowRight' || event.code === 'KeyD') {
     velocityX = shiftSkokerX;
     skoker.image = skokerRightImage;
-  } else if (event.code == 'ArrowLeft' || event.code == 'KeyA') {
+  } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
     velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
-  } else if (event.code == 'KeyR') {
-    if (gameOverFlag) initGame();
-  } else if (event.code == 'Space') {
+  } else if (event.code === 'Space') {
     pointsForJumpDrawIndex = initialPointsForJumpDrawIndex;
     if (score >= pointsForJump) {
       velocityY = initialVelocityY;
@@ -382,24 +353,10 @@ function skokerControls(event) {
   }
 };
 
-function menuControls(event) {
-  document.removeEventListener('keydown', skokerControls);
-  if (event.code == 'Escape') {
-    clearInterval(lntervalledUpdateGame);
-    initMainMenu();
-  }
-};
-
-function worldsControls(event) {
-
-};
-
 function placePlatforms() {
   arrPlatform = [];
   let platformImage = new Image();
   platformImage.src = './images/clouds/transparent_1x1.png';
-  // platformImage.src = arrPlatformImages[
-    //   randomInteger(0, arrPlatformImages.length - 1)];
 
     // 1-st (starting) platform
     let platform = {
@@ -408,16 +365,13 @@ function placePlatforms() {
       image: platformImage,
       x: canvasWidth/2 - platformWidth/2,
       y: canvasHeight - platformHeight,
-      // y: canvasHeight,
       width: platformWidth,
       height: platformHeight
     };
     arrPlatform.push(platform);
-    // console.log(arrPlatform);
     
   while (arrPlatform[arrPlatform.length - 1].y >= 0) {
     newPlatform();
-    // console.log(arrPlatform[arrPlatform.length - 1]);
   };
 };
 
@@ -441,7 +395,7 @@ function newPlatform() {
     height: platformHeight
   };
 
-  // add colored platforms & images to them
+  // adding colored platforms & images to them
   if (currentWorldColor === 'multiColours') {
     if (randomInteger(1, 100) >= 65) {
       platform.image.src = platformColorsImages[
@@ -453,28 +407,19 @@ function newPlatform() {
       `./images/clouds/colored/cloud-left-1-${currentWorldColor}.png`;
     platform.color = currentWorldColor;
   };
-  
   addMovementToGreenPlatforms(platform, shiftPlatformX);
+
   arrPlatform.push(platform);
 };
 
 function detectColor(skoker, platform) {
+  // normal jump
   velocityY = initialVelocityY;
-  // let side = '';
-  // if (randomInteger(0, 1) === 0) {
-  //   side = 'right';
-  // } else side = 'left';
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
 
   } else if (platform.color === 'blue') {
-    // // mirroring skoker
-    // velocityX = -velocityX;
-    // if (skoker.image === skokerRightImage) {
-    //   skoker.image = skokerLeftImage;
-    // } else skoker.image = skokerRightImage;
-
     // mirroring platforms
     for (let currentPlatform of arrPlatform) {
       let platformCenter = currentPlatform.x + platformWidth/2;
@@ -484,17 +429,16 @@ function detectColor(skoker, platform) {
         platformCenter = canvasWidth/2 + (canvasWidth/2 - platformCenter);
       }
       currentPlatform.x = platformCenter - platformWidth/2;
-    }
+    };
 
   } else if (platform.color === 'grey') {
     // grey turns to black
     platform.color = 'black';
     platform.image.src = 
-      // `./images/clouds/colored/cloud-${side}-1-black.png`;
       `./images/clouds/colored/cloud-${randomLeftOrRight()}-1-black.png`;
 
   } else if (platform.color === 'black') {
-    // black disappear
+    // disappearance Black platforms
     platform.collision = false;
     platform.color = 'transparent';
     platform.image.src = './images/clouds/transparent_1x1.png';
@@ -502,6 +446,8 @@ function detectColor(skoker, platform) {
   } else if (platform.color === 'red') {
     // explodes - farther skoker is from the center of the platform,
     // harder kicks him away along X & disappear
+    velocityY = initialVelocityY * 1.3;
+
     let xDistanceSkokerPlatform = (skoker.x + skoker.width/2)
       - (platform.x + platform.width/2);
     let coeffShiftSkokerX = xDistanceSkokerPlatform/(platform.width/2);
