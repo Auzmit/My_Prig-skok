@@ -15,7 +15,6 @@ let context;
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
-// let choosedWorld = '';
 
 // screens
 let currentWorldColor = '';
