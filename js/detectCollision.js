@@ -1,8 +1,10 @@
-export default (a, b) => {
-  if (b.collision) {
-    return a.x < b.x + b.width &&   // on x: a's Top Left corner < b's Top Right corner
-           a.x + a.width > b.x &&   // on x: a's Top Right corner < b's Top Left corner
-           a.y < b.y + b.height &&  // on y: a's Top Left corner < b's Bottom Right corner
-           a.y + a.height > b.y;    // on y: a's Top Right corner < b's Bottom Left corner
+function detectCollision(skoker, cloud) {
+  if (cloud.collision) {
+    return skoker.x < cloud.x + cloud.width &&    // on x: sk's TopL corner < cl's TopR corner
+           skoker.x + skoker.width > cloud.x &&   // on x: sk's TopR corner < cl's TopL corner
+           skoker.y < cloud.y + cloud.height &&   // on y: sk's TopL corner < cl's BottomR corner
+           skoker.y + skoker.height > cloud.y;    // on y: sk's TopR corner < cl's BottomL corner
   } else return false;
-}
+};
+
+export { detectCollision };

@@ -1,6 +1,7 @@
-import canvasMouseCoords from './canvasMouseCoords.js';
-import detectCollision from './detectCollision.js';
-import randomInteger from './randomInteger.js';
+import { canvasMouseCoords } from './canvasMouseCoords.js';
+import { detectCollision } from './detectCollision.js';
+import { randomInteger, randomLeftOrRight } from './random.js';
+import { addMovementToGreenPlatforms } from './addMovementToGreenPlatforms.js';
 
 
 // canvas init
@@ -14,27 +15,28 @@ let context;
 let lntervalledUpdateGame;
 let lntervalledUpdateFreq = 16;
 let gameOverFlag = false;
-let choosedWorld = '';
+// let choosedWorld = '';
 
 // screens
+let currentWorldColor = '';
 let arrScreens = ['worldsMenu', 'gameWorld'];
 let currentScreen = arrScreens[0];
 // worlds screen
 // let arrWorldsColors = ['yellow', 'multiColours', 'grey',
 //   'green', 'black'];
 let objWorldsInfo = {
+  'multiColours': {fillColor: 'rgba(255, 255, 255, 0.4)', name: 'Обычная жизнь',
+    str1: 'жизнь как она есть:', str2: 'со своими взлётами и падениями'},
   'yellow': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Детский',
     str1: 'всё просто - даже', str2: 'ребёнок справится'},
-  'multiColours': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Обычная жизнь',
-    str1: 'жизнь как она есть:', str2: 'со своими взлётами и падениями'},
-  'grey': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Нуар',
+  'grey': {fillColor: 'rgba(100, 100, 100, 0.4)', name: 'Нуар',
     str1: 'это сложный мир,', str2: 'но дающий право на ошибку'},
-  'green': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Green Lives Matter',
+  'green': {fillColor: 'rgba(0, 200, 0, 0.4)', name: 'Green Lives Matter',
     str1: 'движение это жизнь, да?', str2: 'а природа - это и есть движение!'},
-  'black': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Нуарный кошмар',
+  'black': {fillColor: 'rgba(0, 0, 0, 0.4)', name: 'Нуарный кошмар',
     str1: 'на самом деле всё просто -', str2: 'просто не ошибайся)'}
 };
-let worldNumber = 0;
+// let worldNumber = 0;
 let rectWidth = canvasWidth*3/6;
 let rectHeight = rectWidth*2/8;
 let rectShiftY = rectHeight*1.3;
@@ -99,8 +101,7 @@ for (let i = 1; i <= 6; i++) {
   arrPlatformImages.push(`./images/clouds/cloud-left-${i}.png`);
 };
 let platformColorsImages = [];
-let platformColors = ['blue', 'green',
-                      'grey', 'red', 'yellow'];
+let platformColors = ['blue', 'green', 'grey', 'red', 'yellow'];
 for (let platformColor of platformColors) {
   platformColorsImages.push(
     `./images/clouds/colored/cloud-right-1-${platformColor}.png`);
@@ -125,12 +126,12 @@ document.addEventListener('click', (event) => {
     let mouseY = coords.y;
     if ((mouseX >= rectPosX) &&
         (mouseX <= rectPosX + rectWidth)) {
-          for (let world in objWorldsInfo) {
-            let currRectPosY = objWorldsInfo[world].Y;
+          for (let worldColor in objWorldsInfo) {
+            let currRectPosY = objWorldsInfo[worldColor].Y;
             if ((mouseY >= currRectPosY) &&
                 (mouseY <= currRectPosY + rectHeight)) {
-                  // console.log(world);
-              initGame(world);
+              currentWorldColor = worldColor;
+              initGame();
             };
         };
 
@@ -214,11 +215,8 @@ function initWorldsMenu() {
   
   let fontSizeWorldName = canvasWidth/20;
 
-  let arrWorldNameAndY = [];
-  worldNumber = 0;
-
+  // wolrds buttons
   for (let world in objWorldsInfo) {
-    // console.log(objWorldsInfo[world]);
     // rectangle
     context.fillStyle = objWorldsInfo[world].fillColor;
     context.strokeStyle = 'black';
@@ -240,79 +238,10 @@ function initWorldsMenu() {
       objWorldsInfo[world].Y + rectHeight/20 + fontSizeWorldName*1.2);
     context.fillText(objWorldsInfo[world].str2, rectPosX + rectWidth/2,
       objWorldsInfo[world].Y + rectHeight/20 + fontSizeWorldName*1.7);
-  }
-
-  // function buttonWorld(fillColor, worldName, des1, des2) {
-  //   // rectangle
-  //   rectPosY = rectPosY + rectHeight*1.3;
-  //   context.fillStyle = fillColor;
-  //   context.strokeStyle = 'black';
-  //   context.beginPath();
-  //   context.roundRect(rectPosX, rectPosY,
-  //     rectWidth, rectHeight, rectRadii);
-  //   context.fill();
-  //   context.stroke();
-
-  //   arrWorldNameAndY.push([arrWorldsColors[worldNumber], rectPosY]);
-  //   worldNumber += 1;
-
-  //   // text
-  //   context.textAlign = 'center';
-  //   context.textBaseline = 'top';
-  //   context.font = `bold ${fontSizeWorldName}px ${fontTimesNewRoman}`;
-  //   context.fillStyle = '#000000';
-  //   context.fillText(worldName, rectPosX + rectWidth/2,
-  //     rectPosY + rectHeight/12);
-  //   context.font = `bold ${fontSizeWorldName/1.8}px ${fontTimesNewRoman}`;
-  //   context.fillText(des1, rectPosX + rectWidth/2,
-  //     rectPosY + rectHeight/20 + fontSizeWorldName*1.2);
-  //   context.fillText(des2, rectPosX + rectWidth/2,
-  //     rectPosY + rectHeight/20 + fontSizeWorldName*1.7);
-  // };
-
-  // // yellow - Детский
-  // buttonWorld('rgba(255, 200, 0, 0.4)', 'Детский',
-  //   'всё просто - даже', 'ребёнок справится');
-
-  // // multiColours - Обычная жизнь
-  // buttonWorld('rgba(255, 200, 0, 0.4)', 'Обычная жизнь',
-  //   'жизнь как она есть:', 'со своими взлётами и падениями');
-
-  // // grey - Нуар
-  // buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуар',
-  //   'это сложный мир,', 'но дающий право на ошибку');
-  
-  // // green - Green Lives Matter
-  // buttonWorld('rgba(255, 200, 0, 0.4)', 'Green Lives Matter',
-  //   'движение это жизнь, да?', 'а природа - это и есть движение!');
-  
-  // // black - Нуарный кошмар
-  // buttonWorld('rgba(255, 200, 0, 0.4)', 'Нуарный кошмар',
-  //   'на самом деле всё просто -', 'просто не ошибайся)');
-
-  // // action on click (& select in future updates...)
-  // for (let worldY of arrWorldNameAndY) {
-  //   canvas.addEventListener('click', (event) => {
-  //     let currRectPosY = worldY[1];
-  //     let coords = canvasMouseCoords(canvas, event);
-  //     let mouseX = coords.x;
-  //     let mouseY = coords.y;
-  //       if ((mouseX > rectPosX) &&
-  //         (mouseX < rectPosX + rectWidth) &&
-  //         (mouseY > currRectPosY) &&
-  //         (mouseY < currRectPosY + rectHeight)) {
-  //       console.log(worldY[0]);
-  //       // choosedWorld = worldY[0].split('WorldY')[0];
-  //       choosedWorld = worldY[0];
-  //       // console.log(choosedWorld);
-  //       initGame()
-  //       // initGame();
-  //     }
-  //   })
-  // };
+  };
 };
 
-function initGame(worldColor) {
+function initGame() {
   currentScreen = 'gameWorld';
 
   score = 0;
@@ -340,7 +269,7 @@ function initGame(worldColor) {
 
   velocityX = initialVelocityX;
   velocityY = initialVelocityY;
-  placePlatforms(worldColor);
+  placePlatforms();
 
   // 3-rd variation of looped 'updateGame':
   clearInterval(lntervalledUpdateGame);
@@ -466,37 +395,41 @@ function worldsControls(event) {
 
 };
 
-function placePlatforms(worldColor) {
+function placePlatforms() {
   arrPlatform = [];
   let platformImage = new Image();
   platformImage.src = './images/clouds/transparent_1x1.png';
   // platformImage.src = arrPlatformImages[
-  //   randomInteger(0, arrPlatformImages.length - 1)];
+    //   randomInteger(0, arrPlatformImages.length - 1)];
 
-  // 1-st (starting) platform
-  let platform = {
-    collision: false,
-    color: 'transparent',
-    image: platformImage,
-    x: canvasWidth/2 - platformWidth/2,
-    y: canvasHeight - platformHeight,
-    // y: canvasHeight,
-    width: platformWidth,
-    height: platformHeight
-  };
-  arrPlatform.push(platform);
-
+    // 1-st (starting) platform
+    let platform = {
+      collision: false,
+      color: 'transparent',
+      image: platformImage,
+      x: canvasWidth/2 - platformWidth/2,
+      y: canvasHeight - platformHeight,
+      // y: canvasHeight,
+      width: platformWidth,
+      height: platformHeight
+    };
+    arrPlatform.push(platform);
+    // console.log(arrPlatform);
+    
   while (arrPlatform[arrPlatform.length - 1].y >= 0) {
-    newPlatform(worldColor);
+    newPlatform();
+    // console.log(arrPlatform[arrPlatform.length - 1]);
   };
 };
 
-function newPlatform(worldColor) {
+function newPlatform() {
   // X-coord randoming with little indent on left & right
   let randomX = randomInteger(widthPadding,
     canvasWidth - widthPadding - platformWidth);
 
   let platformImage = new Image();
+  platformImage.src = arrPlatformImages[
+    randomInteger(0, arrPlatformImages.length - 1)];
   
   let platform = {
     collision: true,
@@ -510,65 +443,28 @@ function newPlatform(worldColor) {
   };
 
   // add colored platforms & images to them
-  if (randomInteger(1, 100) >= 65) {
-    platform.image.src = platformColorsImages[
-      randomInteger(0, platformColorsImages.length - 1)];
-    platform.color = platform.image.src.split('-').pop().split('.')[0];
-    // add movement to green platforms
-    if (platform.color === 'green') {
-      platform.movingSpeedOnX = shiftPlatformX*randomInteger(100, 110)/100;
-      platform.movingOnX = '';
-      if (randomInteger(0, 1) === 0) {
-        platform.movingOnX = '-';
-      } else platform.movingOnX = '+';
+  if (currentWorldColor === 'multiColours') {
+    if (randomInteger(1, 100) >= 65) {
+      platform.image.src = platformColorsImages[
+        randomInteger(0, platformColorsImages.length - 1)];
+      platform.color = platform.image.src.split('-').pop().split('.')[0];
     };
   } else {
-    // add images to other - white - platforms
-    platformImage.src = arrPlatformImages[
-      randomInteger(0, arrPlatformImages.length - 1)];
-  };
-  
-  function devCheckColors(worldColor) {
-      // dev-check certain color
     platform.image.src =
-      `./images/clouds/colored/cloud-left-1-${worldColor}.png`;
-    platform.color = platform.image.src.split('-').pop().split('.')[0];
-  
-      // dev-check certain color between white
-    // if (platform.color !== 'white') {
-    //   platform.image.src =
-    //     `./images/clouds/colored/cloud-left-1-${checkingColor}.png`;
-    //   platform.color = checkingColor;
-    // }
-    if (platform.color === 'green') {
-      platform.movingSpeedOnX = shiftPlatformX*randomInteger(100, 110)/100;
-      platform.movingOnX = '';
-      if (randomInteger(0, 1) === 0) {
-        platform.movingOnX = '-';
-      } else platform.movingOnX = '+';
-    };
+      `./images/clouds/colored/cloud-left-1-${currentWorldColor}.png`;
+    platform.color = currentWorldColor;
   };
-  // colors: blue, green, grey, red, yellow, black
-  // if (choosedWorld !== 'multiColours') {
-  //   // devCheckColors('yellow');
-  //   devCheckColors(choosedWorld);
-  // }
-
-  // console.log(worldColor);
-  if (worldColor !== 'multiColors') {
-    console.log(worldColor);
-    devCheckColors(worldColor);
-  }
-
+  
+  addMovementToGreenPlatforms(platform, shiftPlatformX);
   arrPlatform.push(platform);
 };
 
 function detectColor(skoker, platform) {
   velocityY = initialVelocityY;
-  let side = '';
-  if (randomInteger(0, 1) === 0) {
-    side = 'right';
-  } else side = 'left';
+  // let side = '';
+  // if (randomInteger(0, 1) === 0) {
+  //   side = 'right';
+  // } else side = 'left';
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
@@ -595,7 +491,8 @@ function detectColor(skoker, platform) {
     // grey turns to black
     platform.color = 'black';
     platform.image.src = 
-      `./images/clouds/colored/cloud-${side}-1-black.png`;
+      // `./images/clouds/colored/cloud-${side}-1-black.png`;
+      `./images/clouds/colored/cloud-${randomLeftOrRight()}-1-black.png`;
 
   } else if (platform.color === 'black') {
     // black disappear
@@ -623,19 +520,19 @@ function detectColor(skoker, platform) {
 }
 
 function shiftXGreen(platform) {
-  if (platform.movingOnX === '+') {
+  if (platform.moveDirectionX === '+') {
     if (platform.x + platform.width + shiftPlatformX <=
       canvasWidth - widthPadding) {
-        platform.x += platform.movingSpeedOnX;
+        platform.x += platform.moveSpeedX;
     } else {
-      platform.movingOnX = '-';
+      platform.moveDirectionX = '-';
       shiftXGreen(platform);
     }
-  } else if (platform.movingOnX === '-') {
+  } else if (platform.moveDirectionX === '-') {
     if (platform.x + shiftPlatformX >= widthPadding) {
-      platform.x -= platform.movingSpeedOnX;
+      platform.x -= platform.moveSpeedX;
     } else {
-      platform.movingOnX = '+';
+      platform.moveDirectionX = '+';
       shiftXGreen(platform);
     }
   }

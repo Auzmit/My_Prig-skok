@@ -1,4 +1,4 @@
-export default (canvas, event) => {
+function canvasMouseCoords(canvas, event) {
   // getBoundingClientRect() returns object providing information
   // about size of element and its position relative to the viewport.
   const canvasInfo = canvas.getBoundingClientRect();
@@ -8,3 +8,5 @@ export default (canvas, event) => {
   // console.log({x, y});
   return {x, y};
 };
+
+export { canvasMouseCoords };
