@@ -4,7 +4,7 @@ body {
 }
 
 #canvas {
-  margin-left: 500px;
+  /* margin-left: 500px; */
   /* background-image: url('./images/sky_1200x1562.jpg'); */
   /* background-image: url('./images/sky_1200-1600.png'); */
   background-image: url('./images/sky_1440-1880.png');
