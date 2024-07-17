@@ -25,12 +25,16 @@ let objWorldsInfo = {
     str1: 'жизнь как она есть:', str2: 'со своими взлётами и падениями'},
   'yellow': {fillColor: 'rgba(255, 200, 0, 0.4)', name: 'Детский',
     str1: 'всё просто - даже', str2: 'ребёнок справится'},
-  'grey': {fillColor: 'rgba(100, 100, 100, 0.4)', name: 'Нуар',
+  'grey': {fillColor: 'rgba(150, 150, 150, 0.4)', name: 'Нуар',
     str1: 'это сложный мир,', str2: 'но дающий право на ошибку'},
   'green': {fillColor: 'rgba(0, 200, 0, 0.4)', name: 'Green Lives Matter',
     str1: 'движение это жизнь, да?', str2: 'а природа - это и есть движение!'},
   'black': {fillColor: 'rgba(0, 0, 0, 0.4)', name: 'Нуарный кошмар',
-    str1: 'на самом деле всё просто -', str2: 'просто не ошибайся)'}
+    str1: 'на самом деле всё просто -', str2: 'просто не ошибайся)'},
+  'red': {fillColor: 'rgba(255, 0, 0, 0.4)', name: 'БА-ДА-БУ-У-УМ!!!',
+    str1: 'а ты знаешь,', str2: 'что такое rocket jump?'},
+  'blue': {fillColor: 'rgba(0, 0, 255, 0.4)', name: 'Зазеркалье',
+    str1: 'тоже всё несложно,..', str2: 'если сойти с ума предварительно'}
 };
 let rectWidth = canvasWidth*3/6;
 let rectHeight = rectWidth*2/8;
