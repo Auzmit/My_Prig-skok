@@ -345,7 +345,8 @@ function skokerControls(event) {
   } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
     velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
-  } else if (event.code === 'Space') {
+  } else if (event.code === 'Space' || event.code === 'KeyW'
+    || event.code === 'ArrowUp') {
     pointsForJumpDrawIndex = initialPointsForJumpDrawIndex;
     if (score >= pointsForJump) {
       velocityY = initialVelocityY;
