@@ -113,7 +113,7 @@ let score = 0;
 let pointsForJump = 10;
 let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
-let initialPointsForJumpDrawIndex = 10;
+let initialPointsForJumpDrawIndex = 18;
 
 // window.onload = initMainMenu();
 window.onload = initWorldsMenu();
@@ -352,7 +352,8 @@ function skokerControls(event) {
       score -= pointsForJump;
       pointsForJumpMessage = `-${pointsForJump}`;
     } else {
-      pointsForJumpMessage = `need ${pointsForJump} \n points`;
+      // pointsForJumpMessage = `нужно ${pointsForJump} очков`;
+      pointsForJumpMessage = `мало очков`;
     }
   }
 };
@@ -448,8 +449,8 @@ function detectColor(skoker, platform) {
     platform.image.src = './images/clouds/transparent_1x1.png';
 
   } else if (platform.color === 'red') {
-    // explodes - farther skoker is from the center of the platform,
-    // harder kicks him away along X & disappear
+    // explodes & disappear - farther skoker is from the center of the platform,
+    // harder kicks him away along X & turns him in direction which he is moving
     velocityY = initialVelocityY * 1.3;
 
     let xDistanceSkokerPlatform = (skoker.x + skoker.width/2)
@@ -459,12 +460,16 @@ function detectColor(skoker, platform) {
 
     coeffShiftSkokerX += (coeffShiftSkokerX >= 0) ? 1 : -1;
     velocityX = shiftSkokerX * coeffShiftSkokerX;
+    if (velocityX < 0) {
+      skoker.image = skokerLeftImage;
+    } else skoker.image = skokerRightImage;
 
     platform.image.src = './images/clouds/transparent_1x1.png';
+    platform.color = 'transparent';
     platform.collision = false;
 
   } else if (platform.color === 'green') {
-
+    // do nothing - the platform drives itself anyway
   }
 }
 
