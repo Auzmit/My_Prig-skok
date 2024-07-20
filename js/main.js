@@ -400,10 +400,10 @@ function placePlatforms() {
 
 function newPlatform() {
   // X-coord randoming with little indent on left & right
-  // let randomX = randomInteger(widthPadding,
-  //   canvasWidth - widthPadding - platformWidth);
-  let randomX = randomInteger(platformWidth + widthPadding,
-    canvasWidth - widthPadding - platformWidth*2);
+  let randomX = randomInteger(widthPadding,
+    canvasWidth - widthPadding - platformWidth);
+  // let randomX = randomInteger(platformWidth + widthPadding,
+  //   canvasWidth - widthPadding - platformWidth*2);
 
   let platformImage = new Image();
   platformImage.src = arrPlatformImages[
