@@ -85,7 +85,7 @@ let skoker = {
   y: skokerY,
   width: skokerWidth,
   height: skokerHeight
-}
+};
 
 // platforms init
 // original image width = 1200
@@ -116,6 +116,38 @@ let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 18;
 
+// audio
+let audioDeath = new Audio();
+let arrAudioDeath = [
+  '-blin-zachem-ya-syuda-prishel.mp3',   
+  'ay-menya-snaypnuli-v-polte.mp3',      
+  'bolno-v-noge.mp3',
+  'brue.mp3',
+  'da-idi-tyi.mp3',
+  'daladna.mp3',
+  'davai-po-novoi-misha.mp3',
+  'eralash.mp3',
+  'est-probitie.mp3',
+  'eto-fiasko-bratan.mp3',
+  'golos-beshenogo-gitlera-iz-mema-kotoryiy-nesoglasen.mp3',
+  'grustnaya-violonchel.mp3',
+  'kto-kuda-a-ya-po-delam.mp3',
+  'ne-nihya.mp3',
+  'nepravilno-poprobuy-esch-raz.mp3',    
+  'nope.mp3',
+  'nu-che-narod-pognali1.mp3',
+  'nu-naher.mp3',
+  'o-kurva.mp3',
+  'pojili-i-hvatit.mp3',
+  'puk.mp3',
+  'tutututu-mem-demotivator.mp3',        
+  'vot-eto-povorot.mp3',
+  'vsego-horoshego.mp3',
+  'ya-maslinu-poymal.mp3',
+  'ya-prosto-pohlopayu.mp3',
+  'zdes-nashi-polnomochiya-vse.mp3'
+];
+
 // window.onload = initMainMenu();
 window.onload = initWorldsMenu();
 // window.onload = initGame();
@@ -136,9 +168,9 @@ document.addEventListener('click', (event) => {
               audio.src = './sounds/click_button.mp3';
               audio.play();
               initGame();
-            };
-        };
-    };
+            }
+        }
+    }
   }
 });
 
@@ -148,7 +180,11 @@ document.addEventListener('keydown', (event) => {
       if (event.code === 'Escape') {
         clearInterval(lntervalledUpdateGame);
         initWorldsMenu();
-      } else if (event.code === 'KeyR') initGame();
+      } else if (event.code === 'KeyR') {
+        audioDeath.pause();
+        audioDeath.currentTime = 0;
+        initGame();
+      }
     } else {
       skokerControls(event);
     }
@@ -309,7 +345,7 @@ function updateGame() {
       if (platform.color === 'green') {
         shiftXGreen(platform);
       }
-    }
+    };
   
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
@@ -354,8 +390,8 @@ function updateGame() {
       
       pointsForJumpDrawIndex -= 1;
     }
-  };
-}
+  }
+};
 
 function skokerControls(event) {
   if (event.code === 'ArrowRight' || event.code === 'KeyD') {
@@ -371,6 +407,10 @@ function skokerControls(event) {
       velocityY = initialVelocityY;
       score -= pointsForJump;
       pointsForJumpMessage = `-${pointsForJump}`;
+
+      let audio = new Audio();
+      audio.src = './sounds/trampoline_jumps/0.mp3';
+      audio.play();
     } else {
       // pointsForJumpMessage = `нужно ${pointsForJump} очков`;
       pointsForJumpMessage = `мало очков`;
@@ -383,21 +423,21 @@ function placePlatforms() {
   let platformImage = new Image();
   platformImage.src = './images/clouds/transparent_1x1.png';
 
-    // 1-st (starting) platform
-    let platform = {
-      collision: false,
-      color: 'transparent',
-      image: platformImage,
-      x: canvasWidth/2 - platformWidth/2,
-      y: canvasHeight - platformHeight,
-      width: platformWidth,
-      height: platformHeight
-    };
-    arrPlatform.push(platform);
+  // 1-st (starting) platform
+  let platform = {
+    collision: false,
+    color: 'transparent',
+    image: platformImage,
+    x: canvasWidth/2 - platformWidth/2,
+    y: canvasHeight - platformHeight,
+    width: platformWidth,
+    height: platformHeight
+  };
+  arrPlatform.push(platform);
     
   while (arrPlatform[arrPlatform.length - 1].y >= 0) {
     newPlatform();
-  };
+  }
 };
 
 function newPlatform() {
@@ -498,11 +538,16 @@ function detectColor(skoker, platform) {
     platform.color = 'transparent';
     platform.collision = false;
 
-    audio.src = './sounds/vzryiv.mp3';
+    audio.src = './sounds/explosion.mp3';
     audio.play();
 
   } else if (platform.color === 'green') {
     // do nothing - the platform drives itself anyway
+  };
+  
+  if (!audio.src) {
+    audio.src = './sounds/trampoline_jumps/0.mp3';
+    audio.play();
   }
 }
 
@@ -523,7 +568,7 @@ function shiftXGreen(platform) {
       shiftXGreen(platform);
     }
   }
-}
+};
 
 function gameOver() {
   gameOverFlag = true;
@@ -551,4 +596,10 @@ function gameOver() {
     canvasWidth/2 + gameOverSize);
   context.strokeText('нажмите «R» для рестарта', canvasWidth/2,
     canvasWidth/2 + gameOverSize);
-}
+
+  audioDeath.src = `./sounds/death/${arrAudioDeath[
+    randomInteger(0, arrAudioDeath.length - 1)]}`;
+  audioDeath.play();
+  // console.log(audio.src);
+  // console.log(audio.src.split('./sounds/death/')[0]);
+};

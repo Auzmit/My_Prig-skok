@@ -1,3 +1,17 @@
+// getFileNames нерекурсивно
+// import fs from 'fs';
+// function getFileNames (dir) {
+//   let files = [];
+//   let allFiles = fs.readdirSync(dir);
+//   for (let i = 0; i < allFiles.length; i++) {
+//     let fileName = allFiles[i];
+//     files.push(fileName);
+//   };
+//   return files;
+// };
+// console.log(getFileNames("D:\\andy\\Downloads\\"));
+
+
 // // mirroring skoker
 // velocityX = -velocityX;
 // if (skoker.image === skokerRightImage) {
