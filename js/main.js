@@ -12,7 +12,8 @@ let context;
 // starting 'f_updateGame' every 'lntervalledUpdateFreq' ms
 // with the help of 'setInterval':
 let lntervalledUpdateGame;
-let lntervalledUpdateFreq = 16;
+// let lntervalledUpdateFreq = 16;
+let lntervalledUpdateFreq = 48;
 let gameOverFlag = false;
 
 // screens
@@ -131,6 +132,9 @@ document.addEventListener('click', (event) => {
             if ((mouseY >= currRectPosY) &&
                 (mouseY <= currRectPosY + rectHeight)) {
               currentWorldColor = worldColor;
+              let audio = new Audio();
+              audio.src = './sounds/click_button.mp3';
+              audio.play();
               initGame();
             };
         };
@@ -310,6 +314,10 @@ function updateGame() {
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
       if (detectCollision(skoker, platform) && velocityY >= 0) {
+        let audio = new Audio();
+        // audio.src = `./sounds/trampoline_jumps/${randomInteger(0, 3)}.mp3`;
+        audio.src = './sounds/trampoline_jumps/0.mp3';
+        audio.play();
         detectColor(skoker, platform);
       }
       context.drawImage(platform.image, platform.x,
@@ -392,8 +400,10 @@ function placePlatforms() {
 
 function newPlatform() {
   // X-coord randoming with little indent on left & right
-  let randomX = randomInteger(widthPadding,
-    canvasWidth - widthPadding - platformWidth);
+  // let randomX = randomInteger(widthPadding,
+  //   canvasWidth - widthPadding - platformWidth);
+  let randomX = randomInteger(platformWidth + widthPadding,
+    canvasWidth - widthPadding - platformWidth*2);
 
   let platformImage = new Image();
   platformImage.src = arrPlatformImages[
