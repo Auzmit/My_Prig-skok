@@ -1,3 +1,19 @@
+// getFileNames рекурсивно (оригинал)
+// function getFileNames (dir, files) {
+//   files = files || [];
+//     var allFiles = fs.readdirSync(dir);
+//     for (var i = 0; i < allFiles.length; i++) {
+//         var fileName = dir + '/' + allFiles[i];
+//         if (fs.statSync(fileName).isDirectory()) {
+//             getFileNames (fileName, files);
+//         } else {
+//             files.push(fileName);
+//         };
+//     };
+//     return files;
+// };
+// console.log(getFileNames("D:\\andy\\Downloads\\"));
+//
 // getFileNames нерекурсивно
 // import fs from 'fs';
 // function getFileNames (dir) {
