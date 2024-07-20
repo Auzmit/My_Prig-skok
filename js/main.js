@@ -314,12 +314,12 @@ function updateGame() {
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
       if (detectCollision(skoker, platform) && velocityY >= 0) {
-        // jump's sound
-        let audio = new Audio();
-        // (with more than 1 jump's sound game gets ugly)
-        // audio.src = `./sounds/trampoline_jumps/${randomInteger(0, 3)}.mp3`;
-        audio.src = './sounds/trampoline_jumps/0.mp3';
-        audio.play();
+        // // jump's sound
+        // let audio = new Audio();
+        // // (with more than 1 jump's sound game gets ugly)
+        // // audio.src = `./sounds/trampoline_jumps/${randomInteger(0, 3)}.mp3`;
+        // audio.src = './sounds/trampoline_jumps/0.mp3';
+        // audio.play();
         detectColor(skoker, platform);
       }
       context.drawImage(platform.image, platform.x,
@@ -442,9 +442,14 @@ function newPlatform() {
 function detectColor(skoker, platform) {
   // normal jump
   velocityY = initialVelocityY;
+  // init jump audio
+  let audio = new Audio();
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
+
+    audio.src = `./sounds/trampoline_jumps/${randomInteger(1, 2)}.mp3`;
+    audio.play();
 
   } else if (platform.color === 'blue') {
     // mirroring platforms
@@ -457,6 +462,9 @@ function detectColor(skoker, platform) {
       }
       currentPlatform.x = platformCenter - platformWidth/2;
     };
+
+    audio.src = './sounds/swipe.mp3';
+    audio.play();
 
   } else if (platform.color === 'grey') {
     // grey turns to black
@@ -489,6 +497,9 @@ function detectColor(skoker, platform) {
     platform.image.src = './images/clouds/transparent_1x1.png';
     platform.color = 'transparent';
     platform.collision = false;
+
+    audio.src = './sounds/vzryiv.mp3';
+    audio.play();
 
   } else if (platform.color === 'green') {
     // do nothing - the platform drives itself anyway
