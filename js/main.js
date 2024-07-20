@@ -191,7 +191,7 @@ function initWorldsMenu() {
   canvas.width = canvasWidth;
   context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   let fontSizeWorldName = canvasWidth/20;
 
   // wolrds buttons
@@ -218,6 +218,15 @@ function initWorldsMenu() {
     context.fillText(objWorldsInfo[world].str2, rectPosX + rectWidth/2,
       objWorldsInfo[world].Y + rectHeight/20 + fontSizeWorldName*1.7);
   };
+
+  // selected world's stroke - bad idea cause of need to redraw all menu
+  // context.lineWidth = 6;
+  // context.strokeStyle = 'black';
+  // context.beginPath();
+  // context.roundRect(rectPosX, objWorldsInfo.multiColours.Y,
+  //   rectWidth, rectHeight, rectRadii);
+  // context.stroke();
+  // context.lineWidth = 1;
 };
 
 function initGame() {
@@ -501,9 +510,7 @@ function gameOver() {
   // 'Игра окончена'
   let gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
   gradient.addColorStop('0', 'FireBrick');
-  // gradient.addColorStop('0', 'blue');
   gradient.addColorStop('0.5', 'red');
-  // gradient.addColorStop('1', 'DarkRed');
   gradient.addColorStop('1', 'DarkRed');
   context.fillStyle = gradient;
   context.strokeStyle = 'black';
@@ -515,12 +522,7 @@ function gameOver() {
   // 'нажмите "R" для рестарта'
   context.fillStyle = 'black';
   context.strokeStyle = 'white';
-  // context.font = `bold ${gameOverSize/1.7}px ${fontArial}`;
-  // context.font = `bold ${gameOverSize/1.7}px ${fontCourierNew}`;
-  // context.font = `bold ${gameOverSize/1.7}px ${fontGeorgia}`;
-  // context.font = `bold ${gameOverSize/1.8}px ${fontTimesNewRoman}`;
   context.font = `bold ${gameOverSize/1.7}px ${fontTrebuchetMS}`;
-  // context.font = `bold ${gameOverSize/1.7}px ${fontVerdana}`;
   context.textAlign = 'center';
   context.fillText('нажмите «R» для рестарта', canvasWidth/2,
     canvasWidth/2 + gameOverSize);
