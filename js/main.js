@@ -12,8 +12,8 @@ let context;
 // starting 'f_updateGame' every 'lntervalledUpdateFreq' ms
 // with the help of 'setInterval':
 let lntervalledUpdateGame;
-// let lntervalledUpdateFreq = 16;
-let lntervalledUpdateFreq = 48;
+let lntervalledUpdateFreq = 16;
+// let lntervalledUpdateFreq = 48;
 let gameOverFlag = false;
 
 // screens
@@ -314,7 +314,9 @@ function updateGame() {
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
       if (detectCollision(skoker, platform) && velocityY >= 0) {
+        // jump's sound
         let audio = new Audio();
+        // (with more than 1 jump's sound game gets ugly)
         // audio.src = `./sounds/trampoline_jumps/${randomInteger(0, 3)}.mp3`;
         audio.src = './sounds/trampoline_jumps/0.mp3';
         audio.play();
