@@ -115,6 +115,21 @@ let pointsForJump = 10;
 let pointsForJumpMessage = '';
 let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 18;
+let audioAirJump = new Audio();
+    audioAirJump.src = './sounds/puk_air-jump.mp3';
+let audioClick = new Audio();
+    audioClick.src = './sounds/click_button.mp3';
+
+// isons of sounds
+let imageSound = new Image();
+let isSoundOn = true;
+let iconSoundWidth = canvasWidth*0.07;
+let iconSoundHeight = iconSoundWidth;
+let iconSoundOffset = canvasWidth*0.02;
+let iconSoundPosX = canvasWidth - iconSoundOffset - iconSoundWidth;
+let iconSoundPosY = iconSoundOffset;
+// new random death sound
+let newRandomAudioDeath = new Audio();
 
 // audio
 let audioDeath = new Audio();
@@ -152,6 +167,7 @@ document.addEventListener('click', (event) => {
     let coords = canvasMouseCoords(canvas, event);
     let mouseX = coords.x;
     let mouseY = coords.y;
+    // select world
     if ((mouseX >= rectPosX) &&
         (mouseX <= rectPosX + rectWidth)) {
           for (let worldColor in objWorldsInfo) {
@@ -159,13 +175,19 @@ document.addEventListener('click', (event) => {
             if ((mouseY >= currRectPosY) &&
                 (mouseY <= currRectPosY + rectHeight)) {
               currentWorldColor = worldColor;
-              let audio = new Audio();
-              audio.src = './sounds/click_button.mp3';
-              audio.play();
+              if (isSoundOn) audioClick.play();
               initGame();
             }
         }
-    }
+    };
+    // sound settings
+    if ((mouseX >= iconSoundPosX) &&
+        (mouseX <= iconSoundPosX + iconSoundWidth) &&
+        (mouseY >= iconSoundPosY) &&
+        (mouseY <= iconSoundPosY + iconSoundHeight)) {
+      isSoundOn = !isSoundOn;
+      iconsSounds();
+    };
   }
 });
 
@@ -173,6 +195,8 @@ document.addEventListener('keydown', (event) => {
   if (currentScreen === 'gameWorld') {
     if (gameOverFlag) {
       if (event.code === 'Escape') {
+        audioDeath.pause();
+        audioDeath.currentTime = 0;
         clearInterval(lntervalledUpdateGame);
         initWorldsMenu();
       } else if (event.code === 'KeyR') {
@@ -262,6 +286,8 @@ function initWorldsMenu() {
   //   rectWidth, rectHeight, rectRadii);
   // context.stroke();
   // context.lineWidth = 1;
+
+  iconsSounds();
 };
 
 function initGame() {
@@ -275,6 +301,9 @@ function initGame() {
   canvas.width = canvasWidth;
   context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // iconsSounds();
+  // context.drawImage(imageIconDeathSounds, 0, 0);
 
   // load images
   skokerRightImage = new Image();
@@ -345,12 +374,7 @@ function updateGame() {
     // jump from the platform & draw platform's
     for (const platform of arrPlatform) {
       if (detectCollision(skoker, platform) && velocityY >= 0) {
-        // // jump's sound
-        // let audio = new Audio();
-        // // (with more than 1 jump's sound game gets ugly)
-        // // audio.src = `./sounds/trampoline_jumps/${randomInteger(0, 3)}.mp3`;
-        // audio.src = './sounds/trampoline_jumps/0.mp3';
-        // audio.play();
+        // jump's sound in f_detectColor
         detectColor(skoker, platform);
       }
       context.drawImage(platform.image, platform.x,
@@ -385,6 +409,8 @@ function updateGame() {
       
       pointsForJumpDrawIndex -= 1;
     }
+
+    // iconsSounds();
   }
 };
 
@@ -395,17 +421,20 @@ function skokerControls(event) {
   } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
     velocityX = -shiftSkokerX;
     skoker.image = skokerLeftImage;
+  // air jump
   } else if (event.code === 'Space' || event.code === 'KeyW'
     || event.code === 'ArrowUp') {
     pointsForJumpDrawIndex = initialPointsForJumpDrawIndex;
-    if (score >= pointsForJump) {
+    if (score ) {
       velocityY = initialVelocityY;
       score -= pointsForJump;
       pointsForJumpMessage = `-${pointsForJump}`;
 
-      let audio = new Audio();
-      audio.src = './sounds/trampoline_jumps/0.mp3';
-      audio.play();
+      if (isSoundOn) {
+        // audioAirJump.src = './sounds/trampoline_jumps/0.mp3';
+        audioAirJump.currentTime = 0;
+        audioAirJump.play();
+      }
     } else {
       // pointsForJumpMessage = `нужно ${pointsForJump} очков`;
       pointsForJumpMessage = `мало очков`;
@@ -478,13 +507,15 @@ function detectColor(skoker, platform) {
   // normal jump
   velocityY = initialVelocityY;
   // init jump audio
-  let audio = new Audio();
+  let audioDetectColor = new Audio();
 
   if (platform.color === 'yellow') {
     velocityY = initialVelocityY * 2.2;
 
-    audio.src = `./sounds/trampoline_jumps/${randomInteger(1, 2)}.mp3`;
-    audio.play();
+    if (isSoundOn) {
+      audioDetectColor.src = `./sounds/trampoline_jumps/${randomInteger(1, 2)}.mp3`;
+      audioDetectColor.play();
+    }
 
   } else if (platform.color === 'blue') {
     // mirroring platforms
@@ -498,8 +529,10 @@ function detectColor(skoker, platform) {
       currentPlatform.x = platformCenter - platformWidth/2;
     };
 
-    audio.src = './sounds/swipe.mp3';
-    audio.play();
+    if (isSoundOn) {
+      audioDetectColor.src = './sounds/swipe.mp3';
+      audioDetectColor.play();
+    }
 
   } else if (platform.color === 'grey') {
     // grey turns to black
@@ -533,16 +566,20 @@ function detectColor(skoker, platform) {
     platform.color = 'transparent';
     platform.collision = false;
 
-    audio.src = './sounds/explosion.mp3';
-    audio.play();
+    if (isSoundOn) {
+      audioDetectColor.src = './sounds/explosion.mp3';
+      audioDetectColor.play();
+    }
 
   } else if (platform.color === 'green') {
     // do nothing - the platform drives itself anyway
   };
   
-  if (!audio.src) {
-    audio.src = './sounds/trampoline_jumps/0.mp3';
-    audio.play();
+  if (isSoundOn) {
+    if (!audioDetectColor.src) {
+      audioDetectColor.src = './sounds/trampoline_jumps/0.mp3';
+      audioDetectColor.play();
+    }
   }
 }
 
@@ -591,10 +628,26 @@ function gameOver() {
     canvasWidth/2 + gameOverSize);
   context.strokeText('нажмите «R» для рестарта', canvasWidth/2,
     canvasWidth/2 + gameOverSize);
-
-  audioDeath.src = `./sounds/death/${arrAudioDeath[
-    randomInteger(0, arrAudioDeath.length - 1)]}`;
-  audioDeath.play();
-  // console.log(audioDeath.src);
-  // console.log(audioDeath.src.split('./sounds/death/')[0]);
+  
+  if (isSoundOn) {
+    // new random death sound
+    do {
+      newRandomAudioDeath.src = `./sounds/death/${arrAudioDeath[
+        randomInteger(0, 1)]}`;
+    } while (audioDeath.src === newRandomAudioDeath.src);
+    audioDeath.src = newRandomAudioDeath.src;
+    audioDeath.play();
+  }
 };
+
+function iconsSounds() {  
+  if (isSoundOn) {
+    imageSound.src = './images/icons_of_sounds/icon_sound-on.png';
+  } else {
+    imageSound.src = 'images/icons_of_sounds/icon_sound-off.png';
+  };
+  imageSound.onload = function() {
+    context.drawImage(imageSound, iconSoundPosX,
+      iconSoundPosY, iconSoundWidth, iconSoundHeight);
+  };
+}
