@@ -2,6 +2,7 @@ my_*
 test*
 test_*
 tmp_*
+temp*
 settings.json
 
 node_modules/
