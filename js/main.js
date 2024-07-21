@@ -633,7 +633,7 @@ function gameOver() {
     // new random death sound
     do {
       newRandomAudioDeath.src = `./sounds/death/${arrAudioDeath[
-        randomInteger(0, 1)]}`;
+        randomInteger(0, arrAudioDeath.length - 1)]}`;
     } while (audioDeath.src === newRandomAudioDeath.src);
     audioDeath.src = newRandomAudioDeath.src;
     audioDeath.play();
