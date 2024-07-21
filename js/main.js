@@ -127,7 +127,6 @@ let arrAudioDeath = [
   'daladna.mp3',
   'davai-po-novoi-misha.mp3',
   'eralash.mp3',
-  'est-probitie.mp3',
   'eto-fiasko-bratan.mp3',
   'golos-beshenogo-gitlera-iz-mema-kotoryiy-nesoglasen.mp3',
   'grustnaya-violonchel.mp3',
@@ -139,13 +138,9 @@ let arrAudioDeath = [
   'nu-naher.mp3',
   'o-kurva.mp3',
   'pojili-i-hvatit.mp3',
-  'puk.mp3',
-  'tutututu-mem-demotivator.mp3',        
   'vot-eto-povorot.mp3',
   'vsego-horoshego.mp3',
-  'ya-maslinu-poymal.mp3',
-  'ya-prosto-pohlopayu.mp3',
-  'zdes-nashi-polnomochiya-vse.mp3'
+  'ya-maslinu-poymal.mp3'
 ];
 
 // window.onload = initMainMenu();
@@ -600,6 +595,6 @@ function gameOver() {
   audioDeath.src = `./sounds/death/${arrAudioDeath[
     randomInteger(0, arrAudioDeath.length - 1)]}`;
   audioDeath.play();
-  // console.log(audio.src);
-  // console.log(audio.src.split('./sounds/death/')[0]);
+  // console.log(audioDeath.src);
+  // console.log(audioDeath.src.split('./sounds/death/')[0]);
 };
