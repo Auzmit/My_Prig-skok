@@ -117,21 +117,32 @@ let pointsForJumpDrawIndex = 0;
 let initialPointsForJumpDrawIndex = 18;
 let audioAirJump = new Audio();
     audioAirJump.src = './sounds/puk_air-jump.mp3';
+    // audioAirJump.src = './sounds/trampoline_jumps/0.mp3';
 let audioClick = new Audio();
     audioClick.src = './sounds/click_button.mp3';
 
-// isons of sounds
+// icons (sound & info)
+let iconWidth = canvasWidth*0.07;
+let iconHeight = iconWidth;
+let iconOffset = canvasWidth*0.02;
+  // sound
 let imageSound = new Image();
+let iconSoundPosX = canvasWidth - iconOffset - iconWidth;
+let iconSoundPosY = iconOffset;
 let isSoundOn = true;
-let iconSoundWidth = canvasWidth*0.07;
-let iconSoundHeight = iconSoundWidth;
-let iconSoundOffset = canvasWidth*0.02;
-let iconSoundPosX = canvasWidth - iconSoundOffset - iconSoundWidth;
-let iconSoundPosY = iconSoundOffset;
-// new random death sound
-let newRandomAudioDeath = new Audio();
+  // info
+let imageInfo = new Image();
+    imageInfo.src = 'images/icon_info.png';
+// let iconInfoWidth = iconSoundWidth;
+// let iconInfoHeight = iconSoundWidth;
+// let iconInfoOffset = iconSoundOffset;
+let iconInfoPosX = canvasWidth - iconOffset - iconWidth;
+let iconInfoPosY = iconOffset*2 + iconHeight;
 
 // audio
+  // new random death sound
+let newRandomAudioDeath = new Audio();
+  // arr audio death
 let audioDeath = new Audio();
 let arrAudioDeath = [
   '-blin-zachem-ya-syuda-prishel.mp3',   
@@ -167,6 +178,7 @@ document.addEventListener('click', (event) => {
     let coords = canvasMouseCoords(canvas, event);
     let mouseX = coords.x;
     let mouseY = coords.y;
+
     // select world
     if ((mouseX >= rectPosX) &&
         (mouseX <= rectPosX + rectWidth)) {
@@ -180,13 +192,14 @@ document.addEventListener('click', (event) => {
             }
         }
     };
+
     // sound settings
     if ((mouseX >= iconSoundPosX) &&
-        (mouseX <= iconSoundPosX + iconSoundWidth) &&
+        (mouseX <= iconSoundPosX + iconWidth) &&
         (mouseY >= iconSoundPosY) &&
-        (mouseY <= iconSoundPosY + iconSoundHeight)) {
+        (mouseY <= iconSoundPosY + iconHeight)) {
       isSoundOn = !isSoundOn;
-      iconsSounds();
+      drawIconSound();
     };
   }
 });
@@ -286,8 +299,9 @@ function initWorldsMenu() {
   //   rectWidth, rectHeight, rectRadii);
   // context.stroke();
   // context.lineWidth = 1;
-
-  iconsSounds();
+  
+  drawIconSound();
+  drawIconInfo();
 };
 
 function initGame() {
@@ -301,9 +315,6 @@ function initGame() {
   canvas.width = canvasWidth;
   context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
-
-  // iconsSounds();
-  // context.drawImage(imageIconDeathSounds, 0, 0);
 
   // load images
   skokerRightImage = new Image();
@@ -411,8 +422,6 @@ function updateGame() {
       
       pointsForJumpDrawIndex -= 1;
     }
-
-    // iconsSounds();
   }
 };
 
@@ -427,16 +436,15 @@ function skokerControls(event) {
   } else if (event.code === 'Space' || event.code === 'KeyW'
     || event.code === 'ArrowUp') {
     pointsForJumpDrawIndex = initialPointsForJumpDrawIndex;
-    if (score ) {
+    if (score >= 10) {
       velocityY = initialVelocityY;
       score -= pointsForJump;
       pointsForJumpMessage = `-${pointsForJump}`;
 
       if (isSoundOn) {
-        // audioAirJump.src = './sounds/trampoline_jumps/0.mp3';
         audioAirJump.currentTime = 0;
         audioAirJump.play();
-      }
+      };
     } else {
       // pointsForJumpMessage = `нужно ${pointsForJump} очков`;
       pointsForJumpMessage = `мало очков`;
@@ -658,7 +666,7 @@ function gameOver() {
   }
 };
 
-function iconsSounds() {  
+function drawIconSound() {
   if (isSoundOn) {
     imageSound.src = './images/icons_of_sounds/icon_sound-on.png';
   } else {
@@ -666,6 +674,14 @@ function iconsSounds() {
   };
   imageSound.onload = function() {
     context.drawImage(imageSound, iconSoundPosX,
-      iconSoundPosY, iconSoundWidth, iconSoundHeight);
+      iconSoundPosY, iconWidth, iconHeight);
   };
-}
+};
+
+function drawIconInfo() {
+  imageInfo.onload = function() {
+    context.drawImage(imageInfo, iconInfoPosX,
+      iconInfoPosY, iconWidth, iconHeight);
+  };
+};
+
