@@ -133,9 +133,6 @@ let isSoundOn = true;
   // info
 let imageInfo = new Image();
     imageInfo.src = 'images/icon_info.png';
-// let iconInfoWidth = iconSoundWidth;
-// let iconInfoHeight = iconSoundWidth;
-// let iconInfoOffset = iconSoundOffset;
 let iconInfoPosX = canvasWidth - iconOffset - iconWidth;
 let iconInfoPosY = iconOffset*2 + iconHeight;
 
@@ -193,13 +190,21 @@ document.addEventListener('click', (event) => {
         }
     };
 
-    // sound settings
+    // icons
+      // sound settings
     if ((mouseX >= iconSoundPosX) &&
         (mouseX <= iconSoundPosX + iconWidth) &&
         (mouseY >= iconSoundPosY) &&
         (mouseY <= iconSoundPosY + iconHeight)) {
       isSoundOn = !isSoundOn;
       drawIconSound();
+    };
+      // info (open new tab on github README.md)
+    if ((mouseX >= iconInfoPosX) &&
+        (mouseX <= iconInfoPosX + iconWidth) &&
+        (mouseY >= iconInfoPosY) &&
+        (mouseY <= iconInfoPosY + iconHeight)) {
+      window.open('https://github.com/Auzmit/My_Prig-skok?tab=readme-ov-file#readme-ov-file');
     };
   }
 });
