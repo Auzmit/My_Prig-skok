@@ -393,7 +393,9 @@ function updateGame() {
     context.font = `bold ${canvasWidth/12}px ${fontVerdana}`;
     context.textAlign = 'left';
     context.fillText(score, canvasWidth/60, canvasWidth/13);
+    context.lineWidth = 1.7;
     context.strokeText(score, canvasWidth/60, canvasWidth/13);
+    context.lineWidth = 1;
 
     // skoker draw
     context.drawImage(skoker.image, skoker.x,
@@ -605,7 +607,7 @@ function shiftXGreen(platform) {
 function gameOver() {
   gameOverFlag = true;
   
-  let gameOverSize = canvasWidth/10;
+  let gameOverSize = canvasWidth/11;
   
   // 'Игра окончена'
   let gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
@@ -614,20 +616,24 @@ function gameOver() {
   gradient.addColorStop('1', 'DarkRed');
   context.fillStyle = gradient;
   context.strokeStyle = 'black';
-  context.font = `bold ${gameOverSize}px ${fontTimesNewRoman}`;
+  context.font = `bold ${gameOverSize}px ${fontVerdana}`;
   context.textAlign = 'center';
   context.fillText('Игра окончена', canvasWidth/2, canvasWidth/2);
+  context.lineWidth = 2;
   context.strokeText('Игра окончена', canvasWidth/2, canvasWidth/2);
+  context.lineWidth = 1;
 
   // 'нажмите "R" для рестарта'
   context.fillStyle = 'black';
   context.strokeStyle = 'white';
-  context.font = `bold ${gameOverSize/1.7}px ${fontTrebuchetMS}`;
+  context.font = `bold ${gameOverSize/1.7}px ${fontVerdana}`;
   context.textAlign = 'center';
   context.fillText('нажмите «R» для рестарта', canvasWidth/2,
     canvasWidth/2 + gameOverSize);
+  context.lineWidth = 1.3;
   context.strokeText('нажмите «R» для рестарта', canvasWidth/2,
     canvasWidth/2 + gameOverSize);
+  context.lineWidth = 1;
   
   if (isSoundOn) {
     // new random death sound

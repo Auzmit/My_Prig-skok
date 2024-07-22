@@ -2,8 +2,8 @@ my_*
 test*
 test_*
 tmp_*
-temp*
 settings.json
+tempCodeRunnerFile.js
 
 node_modules/
 
