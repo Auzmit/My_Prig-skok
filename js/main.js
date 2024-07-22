@@ -607,36 +607,48 @@ function shiftXGreen(platform) {
 function gameOver() {
   gameOverFlag = true;
   
-  let gameOverSize = canvasWidth/11;
+  let textSizeGameOver = canvasWidth/11;
+  let textSizeOtherStrs = textSizeGameOver/1.5;
+  let textsEndOfGame = {
+    gameOver: 'Игра окончена',
+    RToRestart: '«R» - рестарт,',
+    EscToMenu: '«Esc» - возврат в меню'
+  };
   
-  // 'Игра окончена'
+  // 'Игра окончена' string
   let gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
   gradient.addColorStop('0', 'FireBrick');
   gradient.addColorStop('0.5', 'red');
   gradient.addColorStop('1', 'DarkRed');
   context.fillStyle = gradient;
   context.strokeStyle = 'black';
-  context.font = `bold ${gameOverSize}px ${fontVerdana}`;
+  context.font = `bold ${textSizeGameOver}px ${fontVerdana}`;
   context.textAlign = 'center';
-  context.fillText('Игра окончена', canvasWidth/2, canvasWidth/2);
+  context.fillText(textsEndOfGame.gameOver, canvasWidth/2, canvasWidth/2);
   context.lineWidth = 2;
-  context.strokeText('Игра окончена', canvasWidth/2, canvasWidth/2);
+  context.strokeText(textsEndOfGame.gameOver, canvasWidth/2, canvasWidth/2);
   context.lineWidth = 1;
 
-  // 'нажмите "R" для рестарта'
+  // other end-of-game strings
   context.fillStyle = 'black';
-  context.strokeStyle = 'white';
-  context.font = `bold ${gameOverSize/1.7}px ${fontVerdana}`;
+  context.font = `bold ${textSizeOtherStrs}px ${fontVerdana}`;
   context.textAlign = 'center';
-  context.fillText('нажмите «R» для рестарта', canvasWidth/2,
-    canvasWidth/2 + gameOverSize);
+    // texts
+  context.fillText(textsEndOfGame.RToRestart, canvasWidth/2,
+    canvasWidth/2 + textSizeGameOver*2);
+  context.fillText(textsEndOfGame.EscToMenu, canvasWidth/2,
+    canvasWidth/2 + textSizeGameOver*3);
+    // strokes
+  context.strokeStyle = 'white';
   context.lineWidth = 1.3;
-  context.strokeText('нажмите «R» для рестарта', canvasWidth/2,
-    canvasWidth/2 + gameOverSize);
+  context.strokeText(textsEndOfGame.RToRestart, canvasWidth/2,
+    canvasWidth/2 + textSizeGameOver*2);
+  context.strokeText(textsEndOfGame.EscToMenu, canvasWidth/2,
+    canvasWidth/2 + textSizeGameOver*3);
   context.lineWidth = 1;
   
   if (isSoundOn) {
-    // new random death sound
+    // play new(!) random death sound
     do {
       newRandomAudioDeath.src = `./sounds/death/${arrAudioDeath[
         randomInteger(0, arrAudioDeath.length - 1)]}`;
