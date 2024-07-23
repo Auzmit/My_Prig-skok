@@ -1,4 +1,4 @@
-### Нажми, чтобы играть онлайн!
+### Нажми, чтобы играть онлайн (если, коненчо, кнопка зелёная)!
 [![играть онлайн](https://img.shields.io/website?style=plastic&url=https%3A%2F%2Fauzmit.github.io%2FHexlet-Practice_31-group%2F)](https://auzmit.github.io/My_Prig-skok/)
 
 ## Помните Doodle Jump?
@@ -61,3 +61,6 @@ Gif'ки для наглядности:\
 7-ой: Зазеркалье (сложность: тяжёлая) - все облачка Синие\
 После каждого прыжка по облачку все облачка отзеркаливаются по горизонтали\
 Рекорд автора: **35**
+
+### Нажми, чтобы играть онлайн (если, коненчо, кнопка зелёная)!
+[![играть онлайн](https://img.shields.io/website?style=plastic&url=https%3A%2F%2Fauzmit.github.io%2FHexlet-Practice_31-group%2F)](https://auzmit.github.io/My_Prig-skok/)
