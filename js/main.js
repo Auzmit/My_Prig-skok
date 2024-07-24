@@ -54,11 +54,11 @@ for (let world in objWorldsInfo) {
 };
 
 // fonts (web safe):
-let fontArial = 'Arial'; // same line thickness
-let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
-let fontCourierNew = 'Courier New'; // same line thickness, but slim
+// let fontArial = 'Arial'; // same line thickness
+// let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
+// let fontCourierNew = 'Courier New'; // same line thickness, but slim
 let fontTimesNewRoman = 'Times New Roman'; // unsame line thickness
-let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
+// let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
 let fontVerdana = 'Verdana'; // same line thickness & bold
 
 // physics init
@@ -118,7 +118,7 @@ let initialPointsForJumpDrawIndex = 18;
 let audioAirJump = new Audio();
     audioAirJump.src = './sounds/puk_air-jump.mp3';
     // audioAirJump.src = './sounds/trampoline_jumps/0.mp3';
-let audioClick = new Audio();
+let audioClick = new Audio();  
     audioClick.src = './sounds/click_button.mp3';
 
 // icons (sound & info)
@@ -227,38 +227,6 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
-
-// function initMainMenu() {
-//   currentScreen = 'mainMenu';
-
-//   canvas = document.getElementById('canvas');
-//   canvas.height = canvasHeight;
-//   canvas.width = canvasWidth;
-//   context = canvas.getContext('2d');
-//   context.clearRect(0, 0, canvas.width, canvas.height);
-
-//   let rectWidth = canvasWidth*3/6;
-//   let rectHeight = rectWidth*2/8;
-//   let rectPosX = canvasWidth/2 - rectWidth/2;
-//   let rectPosY = canvasHeight*2/8;
-//   let rectRadii = rectWidth/25;
-
-//   // button Worlds
-//   context.fillStyle = 'rgba(255, 200, 0, 0.4)';
-//   context.strokeStyle = 'black';
-//   context.beginPath();
-//   context.roundRect(rectPosX, rectPosY,
-//     rectWidth, rectHeight, rectRadii);
-//   context.fill();
-//   context.stroke();
-//   // text
-//   context.font = `bold ${canvasWidth/15}px ${fontTimesNewRoman}`;
-//   context.textAlign = 'center';
-//   context.textBaseline = 'middle';
-//   context.fillStyle = '#000000';
-//   context.fillText('Миры', rectPosX + rectWidth/2,
-//     rectPosY + rectHeight/2);
-// };
 
 function initWorldsMenu() {
   currentScreen = 'worldsMenu';
