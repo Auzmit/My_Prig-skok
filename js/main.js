@@ -53,13 +53,15 @@ for (let world in objWorldsInfo) {
   rectPosY = rectPosY + rectShiftY;
 };
 
+/* eslint-disable */
 // fonts (web safe):
-// let fontArial = 'Arial'; // same line thickness
-// let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
-// let fontCourierNew = 'Courier New'; // same line thickness, but slim
+let fontArial = 'Arial'; // same line thickness
+let fontGeorgia = 'Georgia'; // unsame line thickness & numbers are jumping
+let fontCourierNew = 'Courier New'; // same line thickness, but slim
 let fontTimesNewRoman = 'Times New Roman'; // unsame line thickness
-// let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
+let fontTrebuchetMS = 'Trebuchet MS'; // same to Arial?
 let fontVerdana = 'Verdana'; // same line thickness & bold
+/* eslint-enable */
 
 // physics init
 let initialVelocityX = 0;
