@@ -124,17 +124,19 @@ let audioClick = new Audio();
     audioClick.src = './sounds/click_button.mp3';
 
 // icons (sound & info)
+  // common variables
 let iconWidth = canvasWidth*0.07;
 let iconHeight = iconWidth;
 let iconOffset = canvasWidth*0.02;
-  // sound
+  // sound (unique variables)
 let imageSound = new Image();
+    imageSound.src = './images/icons_of_sounds/icon_sound-on.png';
 let iconSoundPosX = canvasWidth - iconOffset - iconWidth;
 let iconSoundPosY = iconOffset;
 let isSoundOn = true;
-  // info
+  // info (unique variables)
 let imageInfo = new Image();
-    imageInfo.src = 'images/icon_info.png';
+    imageInfo.src = './images/icon_info.png';
 let iconInfoPosX = canvasWidth - iconOffset - iconWidth;
 let iconInfoPosY = iconOffset*2 + iconHeight;
 
@@ -173,11 +175,28 @@ window.onload = initWorldsMenu();
 // window.onload = initGame();
 
 document.addEventListener('click', (event) => {
-  if (currentScreen === 'worldsMenu') {
-    let coords = canvasMouseCoords(canvas, event);
-    let mouseX = coords.x;
-    let mouseY = coords.y;
+  let coords = canvasMouseCoords(canvas, event);
+  let mouseX = coords.x;
+  let mouseY = coords.y;
 
+  // icons
+      // sound settings
+      if ((mouseX >= iconSoundPosX) &&
+      (mouseX <= iconSoundPosX + iconWidth) &&
+      (mouseY >= iconSoundPosY) &&
+      (mouseY <= iconSoundPosY + iconHeight)) {
+    isSoundOn = !isSoundOn;
+    drawIconSound();
+  };
+    // info (open new tab on github README.md)
+  if ((mouseX >= iconInfoPosX) &&
+      (mouseX <= iconInfoPosX + iconWidth) &&
+      (mouseY >= iconInfoPosY) &&
+      (mouseY <= iconInfoPosY + iconHeight)) {
+    window.open('https://github.com/Auzmit/My_Prig-skok?tab=readme-ov-file#readme-ov-file');
+  };
+
+  if (currentScreen === 'worldsMenu') {
     // select world
     if ((mouseX >= rectPosX) &&
         (mouseX <= rectPosX + rectWidth)) {
@@ -190,24 +209,7 @@ document.addEventListener('click', (event) => {
               initGame();
             }
         }
-    };
-
-    // icons
-      // sound settings
-    if ((mouseX >= iconSoundPosX) &&
-        (mouseX <= iconSoundPosX + iconWidth) &&
-        (mouseY >= iconSoundPosY) &&
-        (mouseY <= iconSoundPosY + iconHeight)) {
-      isSoundOn = !isSoundOn;
-      drawIconSound();
-    };
-      // info (open new tab on github README.md)
-    if ((mouseX >= iconInfoPosX) &&
-        (mouseX <= iconInfoPosX + iconWidth) &&
-        (mouseY >= iconInfoPosY) &&
-        (mouseY <= iconInfoPosY + iconHeight)) {
-      window.open('https://github.com/Auzmit/My_Prig-skok?tab=readme-ov-file#readme-ov-file');
-    };
+    }
   }
 });
 
@@ -396,7 +398,10 @@ function updateGame() {
         skoker.y + skoker.height*2);  
       
       pointsForJumpDrawIndex -= 1;
-    }
+    };
+
+    drawIconSound();
+    drawIconInfo();
   }
 };
 
@@ -633,8 +638,8 @@ function gameOver() {
   if (isSoundOn) {
     // play new(!) random death sound
     do {
-      newRandomAudioDeath.src = `./sounds/death/${arrAudioDeath[
-        randomInteger(0, arrAudioDeath.length - 1)]}`;
+      newRandomAudioDeath.src = './sounds/death/' +
+        arrAudioDeath[randomInteger(0, arrAudioDeath.length - 1)];
     } while (audioDeath.src === newRandomAudioDeath.src);
     audioDeath.src = newRandomAudioDeath.src;
     audioDeath.play();
@@ -643,20 +648,35 @@ function gameOver() {
 
 function drawIconSound() {
   if (isSoundOn) {
-    imageSound.src = './images/icons_of_sounds/icon_sound-on.png';
+    if (imageSound.src.split('/icon_')[1] !== 'sound-on.png') {
+      imageSound.src = './images/icons_of_sounds/icon_sound-on.png';
+    }
   } else {
-    imageSound.src = 'images/icons_of_sounds/icon_sound-off.png';
+    if (imageSound.src.split('/icon_')[1] !== 'sound-off.png') {
+      imageSound.src = './images/icons_of_sounds/icon_sound-off.png';
+    }
   };
-  imageSound.onload = function() {
+
+  if (imageSound.onload !== null) {
     context.drawImage(imageSound, iconSoundPosX,
       iconSoundPosY, iconWidth, iconHeight);
+  } else {
+    imageSound.onload = () => {
+      context.drawImage(imageSound, iconSoundPosX,
+        iconSoundPosY, iconWidth, iconHeight);
+    }
   };
 };
 
 function drawIconInfo() {
-  imageInfo.onload = function() {
+  if (imageInfo.onload !== null) {
     context.drawImage(imageInfo, iconInfoPosX,
       iconInfoPosY, iconWidth, iconHeight);
+  } else {
+    imageInfo.onload = () => {
+      context.drawImage(imageInfo, iconInfoPosX,
+        iconInfoPosY, iconWidth, iconHeight);
+    }
   };
 };
 
