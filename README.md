@@ -1,5 +1,5 @@
 ### Нажми, чтобы играть онлайн (если, коненчо, кнопка зелёная)!
-[![играть онлайн](https://img.shields.io/website?style=plastic&url=https%3A%2F%2Fauzmit.github.io%2FHexlet-Practice_31-group%2F)](https://auzmit.github.io/My_Prig-skok/)
+[![играть онлайн](https://img.shields.io/website?style=plastic&url=https%3A%2F%2Fauzmit.github.io%2FMy_Prig-skok%2F)](https://auzmit.github.io/My_Prig-skok/)
 
 ## Помните Doodle Jump?
 Перед вами его усложнённая версия, в которой главный персонаж -\
